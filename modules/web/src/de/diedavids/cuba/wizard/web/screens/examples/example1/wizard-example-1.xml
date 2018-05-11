@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/window.xsd"
+        xmlns:wizard="http://schemas.diedavids.de/wizard/0.1/ui-component.xsd"
+        caption="msg://caption"
+        class="de.diedavids.cuba.wizard.web.screens.examples.example1.WizardExample1"
+        messagesPack="de.diedavids.cuba.wizard.web.screens.examples.example1">
+    <dialogMode height="600"
+                width="800"/>
+    <layout>
+        <wizard:wizard id="wizardPanel">
+            <wizard:step caption="On-line"/>
+            <wizard:step caption="Cart"/>
+            <wizard:step caption="wizard"/>
+        </wizard:wizard>
+    </layout>
+</window>

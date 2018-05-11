@@ -1,0 +1,2 @@
+CUBA component - Wizard
+======================

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<components>
+    <component>
+        <name>wizard</name>
+        <componentLoader>de.diedavids.cuba.wizard.gui.xml.layout.loaders.WizardLoader</componentLoader>
+        <class>de.diedavids.cuba.wizard.web.gui.components.WebWizard</class>
+    </component>
+</components>
