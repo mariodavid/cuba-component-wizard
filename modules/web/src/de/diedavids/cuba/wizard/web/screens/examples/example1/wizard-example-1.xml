@@ -7,10 +7,16 @@
     <dialogMode height="600"
                 width="800"/>
     <layout>
+
+
         <wizard:wizard id="wizardPanel">
-            <wizard:step caption="On-line"/>
-            <wizard:step caption="Cart"/>
-            <wizard:step caption="wizard"/>
+            <wizard:step caption="wizard" screen="example-1-step-1-frame"/>
         </wizard:wizard>
+
+        <!--
+        <frame id="test" screen="example-1-step-1-frame" />
+
+        -->
+
     </layout>
 </window>
