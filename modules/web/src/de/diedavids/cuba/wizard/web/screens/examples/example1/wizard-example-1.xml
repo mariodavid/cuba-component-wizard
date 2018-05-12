@@ -10,13 +10,9 @@
 
 
         <wizard:wizard id="wizardPanel">
-            <wizard:step caption="wizard" screen="example-1-step-1-frame"/>
+            <wizard:step caption="Step 1" screen="example-1-step-1-frame" />
+            <wizard:step caption="Step 2" screen="example-1-step-2-frame" />
         </wizard:wizard>
-
-        <!--
-        <frame id="test" screen="example-1-step-1-frame" />
-
-        -->
 
     </layout>
 </window>

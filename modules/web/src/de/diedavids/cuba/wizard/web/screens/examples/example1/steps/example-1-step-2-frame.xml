@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/window.xsd"
+        class="de.diedavids.cuba.wizard.web.screens.examples.example1.steps.Example1Step2Frame"
+        messagesPack="de.diedavids.cuba.wizard.web.screens.examples.example1.steps">
+    <dialogMode height="600"
+                width="800"/>
+    <layout>
+
+        <button id="button"
+                caption="My Frame 2" invoke="buttonClick"/>
+    </layout>
+</window>
