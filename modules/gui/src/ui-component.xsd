@@ -7,11 +7,12 @@
 
     <xs:element name="wizard">
         <xs:complexType>
-            <xs:sequence>
-                <xs:element name="wizardStep" type="wizardStep" />
+            <xs:sequence minOccurs="1" maxOccurs="unbounded">
+                <xs:element name="step" type="wizardStep" />
             </xs:sequence>
 
             <xs:attribute name="id" type="xs:string"/>
+            <xs:attribute name="height" type="xs:string"/>
 
         </xs:complexType>
     </xs:element>
