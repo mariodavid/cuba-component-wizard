@@ -7,12 +7,9 @@
     <dialogMode height="600"
                 width="800"/>
     <layout>
-
-
-        <wizard:wizard id="wizardPanel">
+        <wizard:wizard id="wizardPanel" height="100%">
             <wizard:step caption="Step 1" screen="example-1-step-1-frame" />
             <wizard:step caption="Step 2" screen="example-1-step-2-frame" />
         </wizard:wizard>
-
     </layout>
 </window>
