@@ -4,18 +4,23 @@
            elementFormDefault="qualified"
            targetNamespace="http://schemas.diedavids.de/wizard/0.1/ui-component.xsd"
            xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
     <xs:element name="wizard">
         <xs:complexType>
-            <xs:sequence>
-                <xs:element name="step" minOccurs="1" maxOccurs="unbounded">
-                    <xs:complexType>
-                        <xs:attribute name="caption" use="required"/>
-                        <xs:attribute name="screen" use="optional"/>
-                    </xs:complexType>
-                </xs:element>
+            <xs:sequence minOccurs="1" maxOccurs="unbounded">
+                <xs:element name="step" type="wizardStep" />
             </xs:sequence>
 
             <xs:attribute name="id" type="xs:string"/>
+            <xs:attribute name="height" type="xs:string"/>
+
         </xs:complexType>
     </xs:element>
+
+    <xs:complexType name="wizardStep">
+        <xs:attribute name="id" type="xs:string"/>
+        <xs:attribute name="caption" use="required" type="xs:string"/>
+        <xs:attribute name="screen" use="optional" type="xs:string"/>
+    </xs:complexType>
+
 </xs:schema>
