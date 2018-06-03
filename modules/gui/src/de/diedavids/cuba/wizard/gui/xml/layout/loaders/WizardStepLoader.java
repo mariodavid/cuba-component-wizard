@@ -10,6 +10,8 @@ public class WizardStepLoader extends AbstractBoxLoader<WizardStep> {
     public void createComponent() {
         resultComponent = (WizardStep) factory.createComponent(WizardStep.NAME);
         loadId(resultComponent, element);
+        loadCaption(resultComponent, element);
+        loadIcon(resultComponent, element);
 
         createElement(element, element.attributeValue("screen"));
         createSubComponents(resultComponent, element);

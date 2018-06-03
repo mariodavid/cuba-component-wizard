@@ -8,8 +8,8 @@
                 width="800"/>
     <layout>
         <wizard:wizard id="wizardPanel" height="100%">
-            <wizard:step caption="Step 1" screen="example-1-step-1-frame" />
-            <wizard:step caption="Step 2" screen="example-1-step-2-frame" />
+            <wizard:step id="bse" icon="font-icon:ADN" caption="Step 1" screen="example-1-step-1-frame" />
+            <wizard:step id="asd" icon="font-icon:ANCHOR" caption="Step 2" screen="example-1-step-2-frame" />
         </wizard:wizard>
     </layout>
 </window>

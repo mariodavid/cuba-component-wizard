@@ -19,6 +19,7 @@
 
     <xs:complexType name="wizardStep">
         <xs:attribute name="id" type="xs:string"/>
+        <xs:attribute name="icon" type="xs:string"/>
         <xs:attribute name="caption" use="required" type="xs:string"/>
         <xs:attribute name="screen" use="optional" type="xs:string"/>
     </xs:complexType>

@@ -7,6 +7,7 @@ import com.haulmont.cuba.gui.xml.layout.ComponentLoader;
 import com.haulmont.cuba.gui.xml.layout.ComponentsFactory;
 import com.haulmont.cuba.gui.xml.layout.loaders.ContainerLoader;
 import de.diedavids.cuba.wizard.gui.components.Wizard;
+import de.diedavids.cuba.wizard.gui.components.WizardStep;
 import org.dom4j.Element;
 
 import java.util.LinkedHashMap;
@@ -15,7 +16,7 @@ import java.util.Map;
 
 public class WizardLoader extends ContainerLoader<Wizard> {
 
-    protected Map<Element, TabSheet.Tab> pendingLoadSteps = new LinkedHashMap<>();
+    protected Map<Element, WizardStep> pendingLoadSteps = new LinkedHashMap<>();
 
     protected ComponentsFactory componentsFactory = AppBeans.get(ComponentsFactory.NAME);
 
@@ -26,24 +27,15 @@ public class WizardLoader extends ContainerLoader<Wizard> {
 
         List<Element> stepElements = element.elements("step");
 
-        TabSheet tabSheet = componentsFactory.createComponent(TabSheet.class);
-        tabSheet.setSizeFull();
-
-        resultComponent.add(tabSheet);
-
         for (Element stepElement : stepElements) {
-            String name = stepElement.attributeValue("caption");
 
             ComponentLoader stepComponentLoader = getLoader(stepElement, WizardStepLoader.class);
             stepComponentLoader.createComponent();
 
-            Component tabComponent = stepComponentLoader.getResultComponent();
-
-            TabSheet.Tab tab = tabSheet.addTab(name, tabComponent);
-            tab.setCaption(name);
+            WizardStep stepComponent = (WizardStep) stepComponentLoader.getResultComponent();
+            resultComponent.addStep(stepComponent);
             pendingLoadComponents.add(stepComponentLoader);
-
-            pendingLoadSteps.put(stepElement, tab);
+            pendingLoadSteps.put(stepElement, stepComponent);
         }
     }
 
@@ -52,11 +44,11 @@ public class WizardLoader extends ContainerLoader<Wizard> {
         loadWidth(resultComponent, element);
         loadHeight(resultComponent, element);
 
-        List<Element> tabElements = element.elements("step");
-        for (Element tabElement : tabElements) {
-            TabSheet.Tab tab = pendingLoadSteps.remove(tabElement);
-            if (tab != null) {
-                loadIcon(tab, tabElement);
+        List<Element> wizardStepElements = element.elements("step");
+        for (Element tabElement : wizardStepElements) {
+            WizardStep step = pendingLoadSteps.remove(tabElement);
+            if (step != null) {
+                loadIcon(step, tabElement);
             }
         }
 
