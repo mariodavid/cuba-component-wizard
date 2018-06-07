@@ -5,14 +5,11 @@ import com.haulmont.cuba.gui.components.Component;
 public interface WizardDelegate {
     String NAME = "ddcw_WizardDelegate";
 
-    void addStep(WizardStep wizardStep);
+    void addStep(int index, WizardStep wizardStep);
 
 
-    enum WizardMode {
-        HORIZONTAL,
-        VERTICAL
-    }
 
-    Component.Container getLayout();
+
+    Component.Container getTabSheetLayout();
 
 }

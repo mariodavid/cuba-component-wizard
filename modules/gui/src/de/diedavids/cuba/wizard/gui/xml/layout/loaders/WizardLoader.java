@@ -27,15 +27,18 @@ public class WizardLoader extends ContainerLoader<Wizard> {
 
         List<Element> stepElements = element.elements("step");
 
+        int i = 0;
         for (Element stepElement : stepElements) {
 
             ComponentLoader stepComponentLoader = getLoader(stepElement, WizardStepLoader.class);
             stepComponentLoader.createComponent();
 
             WizardStep stepComponent = (WizardStep) stepComponentLoader.getResultComponent();
-            resultComponent.addStep(stepComponent);
+            resultComponent.addStep(i, stepComponent);
             pendingLoadComponents.add(stepComponentLoader);
             pendingLoadSteps.put(stepElement, stepComponent);
+
+            i++;
         }
     }
 
@@ -43,6 +46,8 @@ public class WizardLoader extends ContainerLoader<Wizard> {
     public void loadComponent() {
         loadWidth(resultComponent, element);
         loadHeight(resultComponent, element);
+        loadCaption(resultComponent, element);
+
 
         List<Element> wizardStepElements = element.elements("step");
         for (Element tabElement : wizardStepElements) {
@@ -54,4 +59,5 @@ public class WizardLoader extends ContainerLoader<Wizard> {
 
         loadSubComponents();
     }
+
 }

@@ -2,17 +2,13 @@ package de.diedavids.cuba.wizard.web.gui.components;
 
 import com.haulmont.cuba.core.global.AppBeans;
 import com.haulmont.cuba.gui.components.Component;
-import com.haulmont.cuba.gui.components.filter.FilterDelegate;
 import com.haulmont.cuba.web.gui.components.WebComponentsHelper;
-import com.haulmont.cuba.web.toolkit.ui.CubaAccordion;
 import com.haulmont.cuba.web.toolkit.ui.CubaCssActionsLayout;
-import com.vaadin.ui.TabSheet;
 import de.diedavids.cuba.wizard.gui.components.Wizard;
 import com.haulmont.cuba.web.gui.components.WebCssLayout;
 import de.diedavids.cuba.wizard.gui.components.WizardDelegate;
 import de.diedavids.cuba.wizard.gui.components.WizardStep;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -24,11 +20,9 @@ public class WebWizard extends WebCssLayout implements Wizard {
 
         delegate = AppBeans.get(WizardDelegate.class);
         component = new CubaCssActionsLayout();
-        Container layout = delegate.getLayout();
+        Container layout = delegate.getTabSheetLayout();
         com.vaadin.ui.Component unwrap = WebComponentsHelper.getComposition(layout);
         component.addComponent(unwrap);
-        component.setWidth("100%");
-
     }
 
 
@@ -51,8 +45,8 @@ public class WebWizard extends WebCssLayout implements Wizard {
     }
 
     @Override
-    public void addStep(WizardStep wizardStep) {
-        delegate.addStep(wizardStep);
+    public void addStep(int index, WizardStep wizardStep) {
+        delegate.addStep(index, wizardStep);
     }
 
     @Override

@@ -13,6 +13,8 @@
 
             <xs:attribute name="id" type="xs:string"/>
             <xs:attribute name="height" type="xs:string"/>
+            <xs:attribute name="width" type="xs:string"/>
+            <xs:attribute name="caption" type="xs:string"/>
 
         </xs:complexType>
     </xs:element>
@@ -21,7 +23,7 @@
         <xs:attribute name="id" type="xs:string"/>
         <xs:attribute name="icon" type="xs:string"/>
         <xs:attribute name="caption" use="required" type="xs:string"/>
-        <xs:attribute name="screen" use="optional" type="xs:string"/>
+        <xs:attribute name="screen" use="required" type="xs:string"/>
     </xs:complexType>
 
 </xs:schema>
