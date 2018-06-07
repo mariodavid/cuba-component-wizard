@@ -97,8 +97,8 @@ public class WizardDelegateImpl implements WizardDelegate {
         ButtonsPanel buttonsPanel = componentsFactory.createComponent(ButtonsPanel.class);
         buttonsPanel.setAlignment(Component.Alignment.TOP_RIGHT);
 
-        Button cancelBtn = createBtn("cancel","cancelBtnCaption");
-        Button backBtn = createBtn("back", "backBtnCaption");
+        Button cancelBtn = createWizardControlBtn("cancel");
+        Button backBtn = createWizardControlBtn("back");
 
         prevAction = new BaseAction(backBtn.getId()) {
             @Override
@@ -111,7 +111,7 @@ public class WizardDelegateImpl implements WizardDelegate {
         };
         prevAction.addEnabledRule(() -> !currentTabIsFirstTab());
         backBtn.setAction(prevAction);
-        Button nextBtn = createBtn("next", "nextBtnCaption");
+        Button nextBtn = createWizardControlBtn("next");
 
 
         nextAction = new BaseAction(nextBtn.getId()) {
@@ -128,7 +128,7 @@ public class WizardDelegateImpl implements WizardDelegate {
         nextAction.addEnabledRule(() -> !currentTabIsLastTab());
         nextBtn.setAction(nextAction);
 
-        Button finishBtn = createBtn("finish", "finishBtnCaption");
+        Button finishBtn = createWizardControlBtn("finish");
         finishAction = new BaseAction(finishBtn.getId()) {
             @Override
             public void actionPerform(Component component) {
@@ -194,10 +194,11 @@ public class WizardDelegateImpl implements WizardDelegate {
     }
 
 
-    private Button createBtn(String id, String caption) {
+    private Button createWizardControlBtn(String id) {
         Button btn = componentsFactory.createComponent(Button.class);
         btn.setId(id);
-        btn.setCaption(messages.getMessage(this.getClass(), caption));
+        btn.setCaption(messages.getMessage(this.getClass(), id + "BtnCaption"));
+        btn.setIcon(messages.getMessage(this.getClass(), id + "BtnIcon"));
         return btn;
     }
 
