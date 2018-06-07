@@ -64,11 +64,9 @@ public class WizardDelegateImpl implements WizardDelegate {
         tabSheetLayout.setStyleName("centered-tabs equal-width-tabs icons-on-top");
 
         tabSheetLayout.addSelectedTabChangeListener(event -> {
-           currentTab = event.getSelectedTab();
-           refreshEnabledTabs();
-           nextAction.refreshState();
-           prevAction.refreshState();
-           finishAction.refreshState();
+            currentTab = event.getSelectedTab();
+            refreshEnabledTabs();
+            refreshWizardButtonPanel();
         });
 
 
@@ -76,8 +74,18 @@ public class WizardDelegateImpl implements WizardDelegate {
 
     }
 
+    private void refreshWizardButtonPanel() {
+        nextAction.refreshState();
+        prevAction.refreshState();
+        finishAction.refreshState();
+    }
+
     private void refreshEnabledTabs() {
-        findNextTabs().forEach(tab -> tab.setEnabled(false));
+        findNextTabs().forEach(this::disableTab);
+    }
+
+    private void disableTab(TabSheet.Tab tab) {
+        tab.setEnabled(false);
     }
 
     private List<TabSheet.Tab> findNextTabs() {
@@ -93,10 +101,23 @@ public class WizardDelegateImpl implements WizardDelegate {
     }
 
     private ButtonsPanel createWizardButtonPanel() {
-        ButtonsPanel buttonsPanel = componentsFactory.createComponent(ButtonsPanel.class);
-        buttonsPanel.setAlignment(Component.Alignment.TOP_RIGHT);
 
-        Button cancelBtn = createWizardControlBtn("cancel");
+        ButtonsPanel wizardButtonsPanel = componentsFactory.createComponent(ButtonsPanel.class);
+        wizardButtonsPanel.setAlignment(Component.Alignment.TOP_RIGHT);
+
+        wizardButtonsPanel.add(createCancelBtn());
+        wizardButtonsPanel.add(createPrevBtn());
+        wizardButtonsPanel.add(createNextBtn());
+        wizardButtonsPanel.add(createFinishBtn());
+
+        return wizardButtonsPanel;
+    }
+
+    private Button createCancelBtn() {
+        return createWizardControlBtn("cancel");
+    }
+
+    private Button createPrevBtn() {
         Button prevBtn = createWizardControlBtn("prev");
 
         prevAction = new BaseAction(prevBtn.getId()) {
@@ -108,12 +129,17 @@ public class WizardDelegateImpl implements WizardDelegate {
                 }
             }
         };
-        prevAction.addEnabledRule(() -> !currentTabIsFirstTab());
+        prevAction.addEnabledRule(this::currentTabIsNotFirstTab);
         prevBtn.setAction(prevAction);
+        return prevBtn;
+    }
 
+    private boolean currentTabIsNotFirstTab() {
+        return !currentTabIsFirstTab();
+    }
 
+    private Button createNextBtn() {
         Button nextBtn = createWizardControlBtn("next");
-
 
         nextAction = new BaseAction(nextBtn.getId()) {
             @Override
@@ -128,7 +154,10 @@ public class WizardDelegateImpl implements WizardDelegate {
 
         nextAction.addEnabledRule(() -> !currentTabIsLastTab());
         nextBtn.setAction(nextAction);
+        return nextBtn;
+    }
 
+    private Button createFinishBtn() {
         Button finishBtn = createWizardControlBtn("finish");
         finishAction = new BaseAction(finishBtn.getId()) {
             @Override
@@ -137,14 +166,9 @@ public class WizardDelegateImpl implements WizardDelegate {
             }
         };
 
-        finishAction.addEnabledRule(() -> currentTabIsLastTab());
+        finishAction.addEnabledRule(this::currentTabIsLastTab);
         finishBtn.setAction(finishAction);
-        buttonsPanel.add(cancelBtn);
-        buttonsPanel.add(prevBtn);
-        buttonsPanel.add(nextBtn);
-        buttonsPanel.add(finishBtn);
-
-        return buttonsPanel;
+        return finishBtn;
     }
 
     private boolean currentTabIsLastTab() {
@@ -180,18 +204,16 @@ public class WizardDelegateImpl implements WizardDelegate {
     }
 
     private int getCurrentTabIndex() {
-        int i = 0;
-        int currentTabIndex = 0;
+        int possibleCurrentTabIndex = 0;
+        int result = 0;
 
         for (TabSheet.Tab tab : tabList) {
             if (tab == currentTab) {
-                currentTabIndex = i;
+                result = possibleCurrentTabIndex;
             }
-
-            i++;
-
+            possibleCurrentTabIndex++;
         }
-        return currentTabIndex;
+        return result;
     }
 
 
@@ -220,7 +242,7 @@ public class WizardDelegateImpl implements WizardDelegate {
             tab.setEnabled(true);
         }
         else {
-            tab.setEnabled(false);
+            disableTab(tab);
         }
 
         wizardStep.setMargin(true, false, true, false);
