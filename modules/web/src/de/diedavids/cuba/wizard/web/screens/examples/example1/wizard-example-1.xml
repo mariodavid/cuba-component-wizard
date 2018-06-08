@@ -22,12 +22,7 @@
             <wizard:step id="step3"
                          icon="font-icon:ANCHOR"
                          caption="Step 3"
-                         screen="example-1-step-2-frame" />
-
-            <wizard:step id="step4"
-                         icon="font-icon:ANCHOR"
-                         caption="Step 4"
-                         screen="example-1-step-2-frame" />
+                         screen="example-1-step-3-frame" />
         </wizard:wizard>
 
     </layout>

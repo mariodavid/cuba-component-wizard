@@ -19,6 +19,7 @@ public class WebWizard extends WebCssLayout implements Wizard {
     public WebWizard() {
 
         delegate = AppBeans.get(WizardDelegate.class);
+        delegate.setWizard(this);
         component = new CubaCssActionsLayout();
         Container layout = delegate.getTabSheetLayout();
         com.vaadin.ui.Component unwrap = WebComponentsHelper.getComposition(layout);

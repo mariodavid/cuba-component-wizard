@@ -12,4 +12,5 @@ public interface WizardDelegate {
 
     Component.Container getTabSheetLayout();
 
+    void setWizard(Wizard webWizard);
 }

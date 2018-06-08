@@ -27,14 +27,14 @@ public class WizardDelegateImpl implements WizardDelegate {
 
     protected GroupBoxLayout layoutWrapper;
     protected TabSheet tabSheetLayout;
-    protected Accordion accordionLayout;
 
 
-    protected Map<String, WizardStep> steps = new LinkedHashMap<>();
+    protected Map<TabSheet.Tab, WizardStep> steps = new LinkedHashMap<>();
 
 
     protected List<TabSheet.Tab> tabList = new LinkedList<>();
 
+    protected Wizard wizard;
     protected WizardStep currentStep;
     protected TabSheet.Tab currentTab;
     private BaseAction nextAction;
@@ -46,11 +46,17 @@ public class WizardDelegateImpl implements WizardDelegate {
         createLayout();
     }
 
+
+    @Override
+    public void setWizard(Wizard wizard) {
+        this.wizard = wizard;
+    }
+
     protected void createLayout() {
         if (tabSheetLayout == null) {
             layoutWrapper = componentsFactory.createComponent(GroupBoxLayout.class);
             layoutWrapper.setWidth("100%");
-            createTabSheetLayout();
+            tabSheetLayout = createTabSheetLayout();
             layoutWrapper.add(tabSheetLayout);
         } else {
             Collection<Component> components = tabSheetLayout.getComponents();
@@ -64,14 +70,30 @@ public class WizardDelegateImpl implements WizardDelegate {
         tabSheetLayout.setStyleName("centered-tabs equal-width-tabs icons-on-top");
 
         tabSheetLayout.addSelectedTabChangeListener(event -> {
-            currentTab = event.getSelectedTab();
-            refreshEnabledTabs();
+            setCurrentStep(event);
+            disableAllOtherTabs(event.getSelectedTab());
             refreshWizardButtonPanel();
         });
 
-
         layoutWrapper.add(buttonsPanel);
 
+    }
+
+    private boolean isStepChangedAllowed() {
+        return currentStep == null || currentStep.preClose();
+    }
+
+    private void setCurrentStep(TabSheet.SelectedTabChangeEvent event) {
+        currentTab = event.getSelectedTab();
+        currentStep = steps.get(currentTab);
+        activateStep(currentStep);
+    }
+
+    private void activateStep(WizardStep wizardStep) {
+        if (wizardStep != null) {
+            currentStep = wizardStep;
+            wizardStep.onActivate();
+        }
     }
 
     private void refreshWizardButtonPanel() {
@@ -80,24 +102,23 @@ public class WizardDelegateImpl implements WizardDelegate {
         finishAction.refreshState();
     }
 
-    private void refreshEnabledTabs() {
-        findNextTabs().forEach(this::disableTab);
+    private void disableAllOtherTabs(TabSheet.Tab exludingTab) {
+
+        for (TabSheet.Tab tab : tabList) {
+            if (tab.equals(exludingTab)) {
+                enableTab(tab);
+            } else {
+                disableTab(tab);
+            }
+        }
+    }
+
+    private void enableTab(TabSheet.Tab tab) {
+        tab.setEnabled(true);
     }
 
     private void disableTab(TabSheet.Tab tab) {
         tab.setEnabled(false);
-    }
-
-    private List<TabSheet.Tab> findNextTabs() {
-
-        int tabCount = tabList.size();
-
-        if (tabCount > 0) {
-            return tabList.subList(getCurrentTabIndex() + 1, tabCount);
-        }
-        else {
-            return Collections.emptyList();
-        }
     }
 
     private ButtonsPanel createWizardButtonPanel() {
@@ -123,15 +144,21 @@ public class WizardDelegateImpl implements WizardDelegate {
         prevAction = new BaseAction(prevBtn.getId()) {
             @Override
             public void actionPerform(Component component) {
-                TabSheet.Tab prevTab = findPrevTab();
-                if (prevTab != null) {
-                    tabSheetLayout.setSelectedTab(prevTab);
-                }
+                switchToTab(findPrevTab());
             }
         };
         prevAction.addEnabledRule(this::currentTabIsNotFirstTab);
         prevBtn.setAction(prevAction);
         return prevBtn;
+    }
+
+    private void switchToTab(TabSheet.Tab destination) {
+        if (destination != null && isStepChangedAllowed()) {
+            enableTab(destination);
+            tabSheetLayout.setSelectedTab(destination);
+        } else {
+            wizard.getFrame().showNotification(messages.getMessage(this.getClass(), "switchStepNotAllowed"), Frame.NotificationType.WARNING);
+        }
     }
 
     private boolean currentTabIsNotFirstTab() {
@@ -144,11 +171,7 @@ public class WizardDelegateImpl implements WizardDelegate {
         nextAction = new BaseAction(nextBtn.getId()) {
             @Override
             public void actionPerform(Component component) {
-                TabSheet.Tab nextTab = findNextTab();
-                if (nextTab != null) {
-                    nextTab.setEnabled(true);
-                    tabSheetLayout.setSelectedTab(nextTab);
-                }
+                switchToTab(findNextTab());
             }
         };
 
@@ -174,8 +197,7 @@ public class WizardDelegateImpl implements WizardDelegate {
     private boolean currentTabIsLastTab() {
         if (tabList.size() > 0) {
             return getCurrentTabIndex() == tabList.size() - 1;
-        }
-        else {
+        } else {
             return false;
         }
 
@@ -193,8 +215,7 @@ public class WizardDelegateImpl implements WizardDelegate {
     private TabSheet.Tab findTab(int tabIndex) {
         if (tabIndex >= 0 && tabIndex <= tabList.size() - 1) {
             return tabList.get(tabIndex);
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -204,11 +225,15 @@ public class WizardDelegateImpl implements WizardDelegate {
     }
 
     private int getCurrentTabIndex() {
+        return getTabIndex(currentTab);
+    }
+
+    private int getTabIndex(TabSheet.Tab tabToFind) {
         int possibleCurrentTabIndex = 0;
         int result = 0;
 
         for (TabSheet.Tab tab : tabList) {
-            if (tab == currentTab) {
+            if (tab == tabToFind) {
                 result = possibleCurrentTabIndex;
             }
             possibleCurrentTabIndex++;
@@ -225,29 +250,33 @@ public class WizardDelegateImpl implements WizardDelegate {
         return btn;
     }
 
-    private void createTabSheetLayout() {
-        tabSheetLayout = componentsFactory.createComponent(TabSheet.class);
+    private TabSheet createTabSheetLayout() {
+        TabSheet tabSheetLayout = componentsFactory.createComponent(TabSheet.class);
         tabSheetLayout.setWidth("100%");
-        layoutWrapper.removeAll();
-        layoutWrapper.add(tabSheetLayout);
+        return tabSheetLayout;
     }
 
     @Override
     public void addStep(int index, WizardStep wizardStep) {
-        steps.put(wizardStep.getId(), wizardStep);
 
         TabSheet.Tab tab = tabSheetLayout.addTab(wizardStep.getId(), wizardStep);
-
-        if (tabList.size() == 0) {
-            tab.setEnabled(true);
-        }
-        else {
-            disableTab(tab);
-        }
+        steps.put(tab, wizardStep);
 
         wizardStep.setMargin(true, false, true, false);
         tabList.add(index, tab);
         tab.setCaption(wizardStep.getCaption());
+
+
+        if (tabListHasOnlyThisTab(tab)) {
+            enableTab(tab);
+            activateStep(wizardStep);
+        } else {
+            disableTab(tab);
+        }
+    }
+
+    private boolean tabListHasOnlyThisTab(TabSheet.Tab tab) {
+        return tabList.size() == 1 && tabList.get(0).equals(tab);
     }
 
     @Override

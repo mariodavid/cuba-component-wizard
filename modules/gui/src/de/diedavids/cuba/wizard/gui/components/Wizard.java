@@ -1,6 +1,7 @@
 package de.diedavids.cuba.wizard.gui.components;
 
 import com.haulmont.cuba.gui.components.Component;
+import com.haulmont.cuba.gui.components.Frame;
 
 public interface Wizard extends Component.OrderedContainer,
                 Component.HasIcon, Component.HasCaption {
@@ -14,4 +15,6 @@ public interface Wizard extends Component.OrderedContainer,
     void addStep(int index, WizardStep wizardStep);
 
     WizardStep getStep(String stepId);
+
+    Frame getFrame();
 }
