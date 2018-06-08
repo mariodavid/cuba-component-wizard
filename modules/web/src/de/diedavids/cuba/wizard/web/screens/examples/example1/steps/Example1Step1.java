@@ -1,9 +1,8 @@
 package de.diedavids.cuba.wizard.web.screens.examples.example1.steps;
 
-import com.haulmont.cuba.gui.components.AbstractFrame;
-import de.diedavids.cuba.wizard.gui.components.WizardStepAware;
+import de.diedavids.cuba.wizard.gui.components.AbstractWizardStep;
 
-public class Example1Step1Frame extends AbstractFrame implements WizardStepAware {
+public class Example1Step1 extends AbstractWizardStep {
 
     boolean preCloseTrue = true;
     @Override
@@ -11,6 +10,7 @@ public class Example1Step1Frame extends AbstractFrame implements WizardStepAware
         preCloseTrue = !preCloseTrue;
         return preCloseTrue;
     }
+
     public void buttonClick() {
         showNotification("hello");
     }
