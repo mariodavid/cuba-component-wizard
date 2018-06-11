@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Scope;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import java.util.*;
+import java.util.function.Consumer;
 
 @org.springframework.stereotype.Component(WizardDelegate.NAME)
 @Scope("prototype")
@@ -56,6 +57,8 @@ public class WizardDelegateImpl implements WizardDelegate {
         if (tabSheetLayout == null) {
             layoutWrapper = componentsFactory.createComponent(GroupBoxLayout.class);
             layoutWrapper.setWidth("100%");
+
+            addWizardShortcutActions();
             tabSheetLayout = createTabSheetLayout();
             layoutWrapper.add(tabSheetLayout);
         } else {
@@ -65,6 +68,7 @@ public class WizardDelegateImpl implements WizardDelegate {
             }
         }
 
+        layoutWrapper.requestFocus();
         ButtonsPanel buttonsPanel = createWizardButtonPanel();
 
         tabSheetLayout.setStyleName("centered-tabs equal-width-tabs icons-on-top");
@@ -77,6 +81,11 @@ public class WizardDelegateImpl implements WizardDelegate {
 
         layoutWrapper.add(buttonsPanel);
 
+    }
+
+    private void addWizardShortcutActions() {
+        layoutWrapper.addShortcutAction(new Component.ShortcutAction("CTRL-ALT-ARROW_RIGHT", shortcutTriggeredEvent -> nextAction.actionPerform(shortcutTriggeredEvent.getSource())));
+        layoutWrapper.addShortcutAction(new Component.ShortcutAction("CTRL-ALT-ARROW_LEFT", shortcutTriggeredEvent -> prevAction.actionPerform(shortcutTriggeredEvent.getSource())));
     }
 
     private boolean isStepChangedAllowed() {
@@ -135,7 +144,9 @@ public class WizardDelegateImpl implements WizardDelegate {
     }
 
     private Button createCancelBtn() {
-        return createWizardControlBtn("cancel");
+        Button cancelBtn = createWizardControlBtn("cancel");
+        cancelBtn.setTabIndex(-1);
+        return cancelBtn;
     }
 
     private Button createPrevBtn() {

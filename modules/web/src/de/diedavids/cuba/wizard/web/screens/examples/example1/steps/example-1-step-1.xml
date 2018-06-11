@@ -6,6 +6,6 @@
                 width="800"/>
     <layout>
         <button id="button"
-                caption="My Frame 1" invoke="buttonClick"/>
+                caption="Step 3" invoke="buttonClick"/>
     </layout>
 </window>
