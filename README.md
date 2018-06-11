@@ -1,19 +1,21 @@
 CUBA component - Wizard
 ======================
 
-I tried different stuff in order to create a Wizard DSL.
+This application component let's you create UI wizards through a specific UI component DSL. 
 
+A UI wizard should be used in case of:
+
+* multi step input
+* complex decision workflows
+* the user needs to be guided through the process
+
+
+For more information on this topic see: http://ui-patterns.com/patterns/Wizard
 
 ### Usage
 
-        <wizard:wizard id="wizardPanel">
-            <wizard:step caption="Step 1" screen="example-1-step-1-frame" />
-            <wizard:step caption="Step 2" screen="example-1-step-2-frame" />
+        <wizard:wizard id="myWizard">
+            <wizard:step caption="Step 1" screen="example-1-step-1" />
+            <wizard:step caption="Step 2" screen="example-1-step-2" />
         </wizard:wizard>
         
-       
-### Current problems
-
-The current problem is, that the frames are rendered, but not as part of the tabs but rather below the wizard component.
-
-![wizard-component-result](https://github.com/mariodavid/cuba-component-wizard/blob/master/img/wizard-loader-result.png)
