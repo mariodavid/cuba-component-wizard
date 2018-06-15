@@ -38,6 +38,7 @@ public class WizardDelegateImpl implements WizardDelegate {
     protected Wizard wizard;
     protected WizardStep currentStep;
     protected TabSheet.Tab currentTab;
+    private BaseAction cancelAction;
     private BaseAction nextAction;
     private BaseAction prevAction;
     private BaseAction finishAction;
@@ -56,11 +57,15 @@ public class WizardDelegateImpl implements WizardDelegate {
     protected void createLayout() {
         if (tabSheetLayout == null) {
             layoutWrapper = componentsFactory.createComponent(GroupBoxLayout.class);
-            layoutWrapper.setWidth("100%");
+
+            layoutWrapper.setWidthFull();
+            layoutWrapper.setHeightFull();
 
             addWizardShortcutActions();
             tabSheetLayout = createTabSheetLayout();
+
             layoutWrapper.add(tabSheetLayout);
+            layoutWrapper.expand(tabSheetLayout);
         } else {
             Collection<Component> components = tabSheetLayout.getComponents();
             for (Component component : components) {
@@ -80,7 +85,6 @@ public class WizardDelegateImpl implements WizardDelegate {
         });
 
         layoutWrapper.add(buttonsPanel);
-
     }
 
     private void addWizardShortcutActions() {
@@ -146,6 +150,14 @@ public class WizardDelegateImpl implements WizardDelegate {
     private Button createCancelBtn() {
         Button cancelBtn = createWizardControlBtn("cancel");
         cancelBtn.setTabIndex(-1);
+        cancelAction = new BaseAction(cancelBtn.getId()) {
+            @Override
+            public void actionPerform(Component component) {
+
+            }
+        };
+
+        cancelBtn.setAction(nextAction);
         return cancelBtn;
     }
 
@@ -167,8 +179,6 @@ public class WizardDelegateImpl implements WizardDelegate {
         if (destination != null && isStepChangedAllowed()) {
             enableTab(destination);
             tabSheetLayout.setSelectedTab(destination);
-        } else {
-            wizard.getFrame().showNotification(messages.getMessage(this.getClass(), "switchStepNotAllowed"), Frame.NotificationType.WARNING);
         }
     }
 
