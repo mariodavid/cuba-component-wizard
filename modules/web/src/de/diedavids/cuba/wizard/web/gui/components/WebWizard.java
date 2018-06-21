@@ -12,7 +12,7 @@ import de.diedavids.cuba.wizard.gui.components.WizardStep;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class WebWizard extends WebCssLayout implements Wizard {
+public class WebWizard extends WebCssLayout implements Wizard, Wizard.WizardStepChangeNotifier {
 
     WizardDelegate delegate;
 
@@ -53,5 +53,15 @@ public class WebWizard extends WebCssLayout implements Wizard {
     @Override
     public WizardStep getStep(String stepId) {
         return steps.get(stepId);
+    }
+
+    @Override
+    public void addWizardStepChangeListener(WizardStepChangeListener listener) {
+        getEventRouter().addListener(WizardStepChangeListener.class, listener);
+    }
+
+    @Override
+    public void removeWizardStepChangeListener(WizardStepChangeListener listener) {
+        getEventRouter().removeListener(WizardStepChangeListener.class, listener);
     }
 }
