@@ -16,6 +16,30 @@ import java.util.*;
 public class WebWizard extends WebCssLayout implements Wizard {
 
 
+
+    protected ComponentsFactory componentsFactory;
+
+    protected Messages messages;
+
+    protected GroupBoxLayout layoutWrapper;
+    protected TabSheet tabSheetLayout;
+
+
+    protected Map<TabSheet.Tab, WizardStep> steps = new LinkedHashMap<>();
+    protected Map<String, WizardStep> stepsById = new LinkedHashMap<>();
+
+
+    protected List<TabSheet.Tab> tabList = new LinkedList<>();
+
+    protected Wizard wizard;
+    protected WizardStep currentStep;
+    protected TabSheet.Tab currentTab;
+    private BaseAction cancelAction;
+    private BaseAction nextAction;
+    private BaseAction prevAction;
+    private BaseAction finishAction;
+
+
     public WebWizard() {
         componentsFactory = AppBeans.get(ComponentsFactory.NAME);
         messages = AppBeans.get(Messages.NAME);
@@ -48,7 +72,7 @@ public class WebWizard extends WebCssLayout implements Wizard {
 
     @Override
     public WizardStep getStep(String stepId) {
-        return steps.get(stepId);
+        return stepsById.get(stepId);
     }
 
     @Override
@@ -59,6 +83,16 @@ public class WebWizard extends WebCssLayout implements Wizard {
     @Override
     public void removeWizardStepChangeListener(WizardStepChangeListener listener) {
         getEventRouter().removeListener(WizardStepChangeListener.class, listener);
+    }
+
+    @Override
+    public void addWizardCancelClickListener(WizardCancelClickListener listener) {
+        getEventRouter().addListener(WizardCancelClickListener.class, listener);
+    }
+
+    @Override
+    public void removeWizardCancelClickListener(WizardCancelClickListener listener) {
+        getEventRouter().removeListener(WizardCancelClickListener.class, listener);
     }
 
 
@@ -73,26 +107,6 @@ public class WebWizard extends WebCssLayout implements Wizard {
     }
 
 
-    protected ComponentsFactory componentsFactory;
-
-    protected Messages messages;
-
-    protected GroupBoxLayout layoutWrapper;
-    protected TabSheet tabSheetLayout;
-
-
-    protected Map<TabSheet.Tab, WizardStep> steps = new LinkedHashMap<>();
-
-
-    protected List<TabSheet.Tab> tabList = new LinkedList<>();
-
-    protected Wizard wizard;
-    protected WizardStep currentStep;
-    protected TabSheet.Tab currentTab;
-    private BaseAction cancelAction;
-    private BaseAction nextAction;
-    private BaseAction prevAction;
-    private BaseAction finishAction;
 
 
     protected void createLayout() {
@@ -123,6 +137,7 @@ public class WebWizard extends WebCssLayout implements Wizard {
             setCurrentStep(event);
             disableAllOtherTabs(event.getSelectedTab());
             refreshWizardButtonPanel();
+
         });
 
         layoutWrapper.add(buttonsPanel);
@@ -194,12 +209,18 @@ public class WebWizard extends WebCssLayout implements Wizard {
         cancelAction = new BaseAction(cancelBtn.getId()) {
             @Override
             public void actionPerform(Component component) {
-
+                handleCancelClick();
             }
         };
 
-        cancelBtn.setAction(nextAction);
+        cancelBtn.setAction(cancelAction);
         return cancelBtn;
+    }
+
+    private void handleCancelClick() {
+        Wizard.WizardCancelClickEvent event = new Wizard.WizardCancelClickEvent(this);
+        getEventRouter().fireEvent(WizardCancelClickListener.class,
+                Wizard.WizardCancelClickListener::cancelClicked, event);
     }
 
     private Button createPrevBtn() {
@@ -219,7 +240,18 @@ public class WebWizard extends WebCssLayout implements Wizard {
     private void switchToTab(TabSheet.Tab destination) {
         if (destination != null && isStepChangedAllowed()) {
             enableTab(destination);
+
+            WizardStep prevStep = currentStep;
+            WizardStep step = getStep(destination.getName());
+
+
             tabSheetLayout.setSelectedTab(destination);
+
+
+            Wizard.WizardStepChangeEvent wizardStepChangeEvent = new Wizard.WizardStepChangeEvent(this, prevStep, step);
+            getEventRouter().fireEvent(WizardStepChangeListener.class,
+                    Wizard.WizardStepChangeListener::stepChanged, wizardStepChangeEvent);
+
         }
     }
 
@@ -329,8 +361,10 @@ public class WebWizard extends WebCssLayout implements Wizard {
 
         TabSheet.Tab tab = tabSheetLayout.addTab(wizardStep.getId(), wizardStep);
         steps.put(tab, wizardStep);
+        stepsById.put(wizardStep.getId(), wizardStep);
 
         wizardStep.setMargin(true, false, true, false);
+
         tabList.add(index, tab);
         tab.setCaption(wizardStep.getCaption());
 

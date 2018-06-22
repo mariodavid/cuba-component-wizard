@@ -9,13 +9,24 @@ public class WizardExample1 extends AbstractWindow {
 
 
     @Inject
-    protected Wizard wizardPanel;
+    protected Wizard wizard;
 
     @Override
     public void ready() {
-        wizardPanel.addWizardFinishClickListener(event -> {
+        wizard.addWizardFinishClickListener(event -> {
             showNotification("finish clicked");
             close(COMMIT_ACTION_ID);
+        });
+
+        wizard.addWizardCancelClickListener(event -> {
+            showNotification("cancel clicked");
+            close(CLOSE_ACTION_ID);
+        });
+
+        wizard.addWizardStepChangeListener(event -> {
+            showNotification("step changed from " +
+                    event.getPrevStep().getId() + " to " +
+                    event.getStep().getId());
         });
     }
 }

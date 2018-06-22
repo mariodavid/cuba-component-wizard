@@ -7,8 +7,8 @@
     <dialogMode height="600"
                 forceDialog="true"
                 width="800"/>
-    <layout expand="wizardPanel">
-        <wizard:wizard id="wizardPanel" width="100%" caption="My Wizard">
+    <layout expand="wizard">
+        <wizard:wizard id="wizard" width="100%" caption="My Wizard">
 
             <wizard:step id="step1"
                          icon="font-icon:ADN"
