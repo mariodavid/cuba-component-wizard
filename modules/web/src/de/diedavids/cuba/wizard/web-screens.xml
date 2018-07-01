@@ -9,4 +9,6 @@
             template="de/diedavids/cuba/wizard/web/screens/examples/example1/steps/example-1-step-2.xml"/>
     <screen id="example-1-step-3-frame"
             template="de/diedavids/cuba/wizard/web/screens/examples/example1/steps/example-1-step-3.xml"/>
+    <screen id="example-1-step-4-frame"
+            template="de/diedavids/cuba/wizard/web/screens/examples/example1/steps/example-1-step-4.xml"/>
 </screen-config>

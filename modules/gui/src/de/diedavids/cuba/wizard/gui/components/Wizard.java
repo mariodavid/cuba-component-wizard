@@ -9,6 +9,7 @@ public interface Wizard extends Component.OrderedContainer,
                 Component.HasIcon, Component.HasCaption {
     String NAME = "wizard";
 
+    WizardStep addStep(int index, String name, WizardStepAware wizardStep);
     void addStep(int index, WizardStep wizardStep);
 
     WizardStep getStep(String stepId);
