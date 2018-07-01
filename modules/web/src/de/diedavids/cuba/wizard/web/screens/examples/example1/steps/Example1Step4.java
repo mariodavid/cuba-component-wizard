@@ -9,6 +9,6 @@ public class Example1Step4 extends AbstractWizardStep {
 
     @Override
     public void onActivate() {
-        showNotification("on activate step 4");
+        showNotification("on activate step 4", NotificationType.TRAY);
     }
 }
