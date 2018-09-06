@@ -10,10 +10,24 @@ public class WebWizardStep extends WebVBoxLayout implements WizardStep {
     private String name;
     private WizardStepAware stepComponent;
     private TabSheet.Tab tabComponent;
-    private String icon;
 
     public WebWizardStep() {
 
+    }
+
+    @Override
+    public void setIcon(String icon) {
+        if (tabComponent != null) {
+            tabComponent.setIcon(icon);
+        }
+
+    }
+
+    @Override
+    public void setCaption(String caption) {
+        if (tabComponent != null) {
+            tabComponent.setCaption(caption);
+        }
     }
 
     public WebWizardStep(String name, WizardStepAware stepComponent) {
@@ -43,6 +57,10 @@ public class WebWizardStep extends WebVBoxLayout implements WizardStep {
         }
     }
 
+    @Override
+    public void setWrapperComponent(TabSheet.Tab tabComponent) {
+        this.tabComponent = tabComponent;
+    }
 
 
     private WizardStepAware getWizardStepAware() {

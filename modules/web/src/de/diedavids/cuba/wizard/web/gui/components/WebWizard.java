@@ -372,6 +372,8 @@ public class WebWizard extends WebCssLayout implements Wizard {
         steps.put(tab, wizardStep);
         stepsById.put(wizardStep.getId(), wizardStep);
 
+        wizardStep.setWrapperComponent(tab);
+
         wizardStep.setMargin(true, false, true, false);
 
         tabList.add(index, tab);
@@ -385,6 +387,7 @@ public class WebWizard extends WebCssLayout implements Wizard {
             disableTab(tab);
         }
     }
+
 
     private boolean tabListHasOnlyThisTab(TabSheet.Tab tab) {
         return tabList.size() == 1 && tabList.get(0).equals(tab);
