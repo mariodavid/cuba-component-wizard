@@ -10,6 +10,7 @@ import com.haulmont.cuba.web.toolkit.ui.CubaCssActionsLayout;
 import de.diedavids.cuba.wizard.gui.components.Wizard;
 import com.haulmont.cuba.web.gui.components.WebCssLayout;
 import de.diedavids.cuba.wizard.gui.components.WizardStep;
+import de.diedavids.cuba.wizard.gui.components.WizardStepAware;
 
 import java.util.*;
 
@@ -69,6 +70,7 @@ public class WebWizard extends WebCssLayout implements Wizard {
     public void removeAll() {
         throw new UnsupportedOperationException();
     }
+
 
     @Override
     public WizardStep getStep(String stepId) {
@@ -356,12 +358,21 @@ public class WebWizard extends WebCssLayout implements Wizard {
         return tabSheetLayout;
     }
 
+
+    @Override
+    public WizardStep addStep(int index, String name, WizardStepAware wizardStepAware) {
+        WebWizardStep wizardStep = new WebWizardStep(name, wizardStepAware);
+        addStep(index, wizardStep);
+        return wizardStep;
+    }
+
     @Override
     public void addStep(int index, WizardStep wizardStep) {
-
         TabSheet.Tab tab = tabSheetLayout.addTab(wizardStep.getId(), wizardStep);
         steps.put(tab, wizardStep);
         stepsById.put(wizardStep.getId(), wizardStep);
+
+        wizardStep.setWrapperComponent(tab);
 
         wizardStep.setMargin(true, false, true, false);
 
@@ -376,6 +387,7 @@ public class WebWizard extends WebCssLayout implements Wizard {
             disableTab(tab);
         }
     }
+
 
     private boolean tabListHasOnlyThisTab(TabSheet.Tab tab) {
         return tabList.size() == 1 && tabList.get(0).equals(tab);
