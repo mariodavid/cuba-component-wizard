@@ -17,6 +17,8 @@ public interface Wizard extends Component.OrderedContainer,
     void addWizardStepChangeListener(WizardStepChangeListener listener);
     void removeWizardStepChangeListener(WizardStepChangeListener listener);
 
+    void removeStep(String name);
+
     class WizardStepChangeEvent extends EventObject {
 
         WizardStep prevStep;

@@ -28,6 +28,7 @@ public class WebWizard extends WebCssLayout implements Wizard {
 
     protected Map<TabSheet.Tab, WizardStep> steps = new LinkedHashMap<>();
     protected Map<String, WizardStep> stepsById = new LinkedHashMap<>();
+    protected Map<String, Integer> tabIndexByName = new LinkedHashMap<>();
 
 
     protected List<TabSheet.Tab> tabList = new LinkedList<>();
@@ -86,6 +87,7 @@ public class WebWizard extends WebCssLayout implements Wizard {
     public void removeWizardStepChangeListener(WizardStepChangeListener listener) {
         getEventRouter().removeListener(WizardStepChangeListener.class, listener);
     }
+
 
     @Override
     public void addWizardCancelClickListener(WizardCancelClickListener listener) {
@@ -368,15 +370,17 @@ public class WebWizard extends WebCssLayout implements Wizard {
 
     @Override
     public void addStep(int index, WizardStep wizardStep) {
-        TabSheet.Tab tab = tabSheetLayout.addTab(wizardStep.getId(), wizardStep);
+        String name = wizardStep.getId();
+        TabSheet.Tab tab = tabSheetLayout.addTab(name, wizardStep);
         steps.put(tab, wizardStep);
-        stepsById.put(wizardStep.getId(), wizardStep);
+        stepsById.put(name, wizardStep);
 
         wizardStep.setWrapperComponent(tab);
 
         wizardStep.setMargin(true, false, true, false);
 
         tabList.add(index, tab);
+        tabIndexByName.put(name, index);
         tab.setCaption(wizardStep.getCaption());
 
 
@@ -386,6 +390,23 @@ public class WebWizard extends WebCssLayout implements Wizard {
         } else {
             disableTab(tab);
         }
+    }
+
+
+    @Override
+    public void removeStep(String name) {
+
+        Integer index = tabIndexByName.get(name);
+
+        if (index != null) {
+            stepsById.remove(name);
+
+            tabList.remove((int) index);
+
+            tabSheetLayout.removeTab(name);
+            tabIndexByName.remove(name);
+        }
+
     }
 
 

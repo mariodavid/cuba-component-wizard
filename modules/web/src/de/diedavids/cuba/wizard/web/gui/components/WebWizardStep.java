@@ -31,6 +31,7 @@ public class WebWizardStep extends WebVBoxLayout implements WizardStep {
     }
 
     public WebWizardStep(String name, WizardStepAware stepComponent) {
+        this.id = name;
         this.name = name;
         this.stepComponent = stepComponent;
         this.add((Component) stepComponent);
