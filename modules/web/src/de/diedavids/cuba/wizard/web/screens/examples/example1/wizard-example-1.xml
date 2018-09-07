@@ -7,7 +7,8 @@
     <dialogMode height="600"
                 forceDialog="true"
                 width="800"/>
-    <layout expand="wizard">
+    <layout expand="wizard" spacing="true">
+
         <wizard:wizard id="wizard" width="100%" caption="My Wizard">
 
             <wizard:step id="step1"
@@ -26,5 +27,8 @@
                          screen="example-1-step-3-frame" />
         </wizard:wizard>
 
+        <buttonsPanel>
+            <button id="removeStep" invoke="removeStep" caption="msg://removeStep" />
+        </buttonsPanel>
     </layout>
 </window>

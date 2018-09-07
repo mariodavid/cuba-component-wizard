@@ -11,4 +11,5 @@ public interface WizardStep extends VBoxLayout {
     boolean preClose();
 
     void setWrapperComponent(TabSheet.Tab tabComponent);
+
 }

@@ -40,9 +40,15 @@ public class WizardExample1 extends AbstractWindow {
         WizardStepAware wizardStepAware = (WizardStepAware) openFrame(null, "example-1-step-4-frame");
 
 
-        WizardStep wizardStep = wizard.addStep(3, "Hello", wizardStepAware);
-        wizardStep.setId("Hello");
-        wizardStep.setCaption("Hello 123");
+        WizardStep wizardStep = wizard.addStep(3, "step4", wizardStepAware);
+        wizardStep.setId("step4");
+        wizardStep.setCaption("Step 4");
         wizardStep.setIcon("font-icon:ADN");
+
+
+    }
+
+    public void removeStep() {
+        wizard.removeStep("step4");
     }
 }
