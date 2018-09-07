@@ -19,21 +19,8 @@ For more information on this topic see: http://ui-patterns.com/patterns/Wizard
 
 ## Installation
 
-1. Add the following maven repository `https://dl.bintray.com/mariodavid/cuba-components` to the build.gradle of your CUBA application:
 
-
-        buildscript {
-          repositories {
-            maven {
-              url  "https://dl.bintray.com/mariodavid/cuba-components"
-            }
-          }
-       }
-    
-
-    
-
-
+1. `wizard` is available in the [CUBA marketplace](https://www.cuba-platform.com/marketplace)
 2. Select a version of the add-on which is compatible with the platform version used in your project:
 
 | Platform Version | Add-on Version |
@@ -58,6 +45,13 @@ dependencies {
 
 ## Using the application component
 
+Add a XML namespace `wizard` to the window tag of your screen like this:
+
+    <window xmlns="http://schemas.haulmont.com/cuba/window.xsd"
+        xmlns:wizard="http://schemas.diedavids.de/wizard/0.1/ui-component.xsd">
+
+
+Then add your wizard component to the screen:
 
         <wizard:wizard id="myWizard">
             <wizard:step caption="Step 1" screen="example-1-step-1" />
