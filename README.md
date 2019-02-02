@@ -20,11 +20,12 @@ For more information on this topic see: http://ui-patterns.com/patterns/Wizard
 ## Installation
 
 
-1. `wizard` is available in the [CUBA marketplace](https://www.cuba-platform.com/marketplace)
+1. `wizard` is available in the [CUBA marketplace](https://www.cuba-platform.com/marketplace/wizard)
 2. Select a version of the add-on which is compatible with the platform version used in your project:
 
 | Platform Version | Add-on Version |
 | ---------------- | -------------- |
+| 6.9.x            | 0.2.x          |
 | 6.8.x            | 0.1.x          |
 
 

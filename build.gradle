@@ -1,8 +1,8 @@
 
 buildscript {
-    ext.cubaVersion = '6.8.9'
+    ext.cubaVersion = '6.9.8'
     repositories {
-        
+        mavenCentral()
         maven {
             url 'https://repo.cuba-platform.com/content/groups/work'
             credentials {
@@ -19,6 +19,11 @@ buildscript {
     }
 }
 
+
+plugins {
+    id 'net.researchgate.release' version '2.1.2'
+}
+
 def modulePrefix = 'wizard'
 
 def globalModule = project(":${modulePrefix}-global")
@@ -26,7 +31,7 @@ def coreModule = project(":${modulePrefix}-core")
 def guiModule = project(":${modulePrefix}-gui")
 def webModule = project(":${modulePrefix}-web")
 
-def servletApi = 'org.apache.tomcat:tomcat-servlet-api:8.0.26'
+def servletApi = 'javax.servlet:javax.servlet-api:3.1.0'
 
 
 apply(plugin: 'idea')
@@ -35,8 +40,8 @@ apply(plugin: 'cuba')
 cuba {
     artifact {
         group = 'de.diedavids.cuba.wizard'
-        version = "0.1.0"
-        isSnapshot = false
+        version = project.properties['version'].replaceAll('-SNAPSHOT', '')
+        isSnapshot = project.properties['version'].contains('-SNAPSHOT')
     }
     tomcat {
         dir = "$project.rootDir/deploy/tomcat"
@@ -245,9 +250,6 @@ configure(webModule) {
 }
 
 
-
-
-
 task undeploy(type: Delete, dependsOn: ":${modulePrefix}-web:cleanConf") {
     delete("$cuba.tomcat.dir/shared")
     delete("$cuba.tomcat.dir/webapps/${modulePrefix}-core")
@@ -269,4 +271,4 @@ task wrapper(type: Wrapper) {
     gradleVersion = '4.3.1'
 }
 
-apply from: 'extra.gradle'
+
