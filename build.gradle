@@ -2,7 +2,7 @@
 buildscript {
     ext.cubaVersion = '6.9.8'
     repositories {
-        
+        mavenCentral()
         maven {
             url 'https://repo.cuba-platform.com/content/groups/work'
             credentials {
@@ -21,7 +21,7 @@ buildscript {
 
 
 plugins {
-    id 'net.researchgate.release' version '2.6.0'
+    id 'net.researchgate.release' version '2.1.2'
 }
 
 def modulePrefix = 'wizard'
@@ -250,9 +250,6 @@ configure(webModule) {
 }
 
 
-
-
-
 task undeploy(type: Delete, dependsOn: ":${modulePrefix}-web:cleanConf") {
     delete("$cuba.tomcat.dir/shared")
     delete("$cuba.tomcat.dir/webapps/${modulePrefix}-core")
@@ -274,4 +271,4 @@ task wrapper(type: Wrapper) {
     gradleVersion = '4.3.1'
 }
 
-apply from: 'extra.gradle'
+
