@@ -7,6 +7,9 @@ CUBA component - Wizard
 
 This application component let's you create UI wizards through a specific UI component DSL. 
 
+![checkout-wizard-step-1](https://github.com/mariodavid/cuba-component-wizard/blob/master/img/checkout-wizard-step-1.png)
+
+
 A UI wizard should be used in case of:
 
 * multi step input
@@ -25,6 +28,7 @@ For more information on this topic see: http://ui-patterns.com/patterns/Wizard
 
 | Platform Version | Add-on Version |
 | ---------------- | -------------- |
+| 6.9.x            | 0.3.x          |
 | 6.9.x            | 0.2.x          |
 | 6.8.x            | 0.1.x          |
 
