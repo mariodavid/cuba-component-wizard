@@ -21,7 +21,15 @@ buildscript {
 
 
 plugins {
-    id 'net.researchgate.release' version '2.1.2'
+    id 'net.researchgate.release' version '2.8.0'
+}
+
+task build {}
+build.dependsOn('app:build')
+build.dependsOn('lib:build')
+
+release {
+    buildTasks=['build']
 }
 
 def modulePrefix = 'wizard'
@@ -272,5 +280,4 @@ task restart(dependsOn: ['stop', ":${modulePrefix}-core:deploy", ":${modulePrefi
 task wrapper(type: Wrapper) {
     gradleVersion = '4.3.1'
 }
-
 
