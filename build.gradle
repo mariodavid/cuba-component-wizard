@@ -25,7 +25,6 @@ plugins {
 }
 
 task build {}
-build.dependsOn('app:build')
 build.dependsOn('lib:build')
 
 release {
