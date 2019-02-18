@@ -22,7 +22,7 @@ public class WizardLoader extends ContainerLoader<Wizard> {
 
     @Override
     public void createComponent() {
-        resultComponent = factory.createComponent(Wizard.class);
+        resultComponent = componentsFactory.createComponent(Wizard.class);
         loadId(resultComponent, element);
 
         List<Element> stepElements = element.elements("step");
