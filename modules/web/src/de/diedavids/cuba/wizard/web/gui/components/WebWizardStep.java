@@ -2,11 +2,11 @@ package de.diedavids.cuba.wizard.web.gui.components;
 
 import com.haulmont.cuba.gui.components.Component;
 import com.haulmont.cuba.gui.components.TabSheet;
-import com.haulmont.cuba.web.gui.components.WebFragment;
+import com.haulmont.cuba.web.gui.components.WebVBoxLayout;
 import de.diedavids.cuba.wizard.gui.components.WizardStep;
 import de.diedavids.cuba.wizard.gui.components.WizardStepAware;
 
-public class WebWizardStep extends WebFragment implements WizardStep {
+public class WebWizardStep extends WebVBoxLayout implements WizardStep {
     private String name;
     private WizardStepAware stepComponent;
     private TabSheet.Tab tabComponent;
@@ -66,7 +66,7 @@ public class WebWizardStep extends WebFragment implements WizardStep {
 
     private WizardStepAware getWizardStepAware() {
         if (ownComponents.size() > 0) {
-            return ((WebWizardStep)ownComponents.get(0)).stepComponent;
+            return (WizardStepAware) ownComponents.get(0);
         }
         else {
             return stepComponent;

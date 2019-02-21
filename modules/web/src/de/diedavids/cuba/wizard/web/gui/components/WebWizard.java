@@ -2,9 +2,9 @@ package de.diedavids.cuba.wizard.web.gui.components;
 
 import com.haulmont.cuba.core.global.AppBeans;
 import com.haulmont.cuba.core.global.Messages;
+import com.haulmont.cuba.gui.UiComponents;
 import com.haulmont.cuba.gui.components.*;
 import com.haulmont.cuba.gui.components.actions.BaseAction;
-import com.haulmont.cuba.gui.xml.layout.ComponentsFactory;
 import com.haulmont.cuba.web.gui.components.WebComponentsHelper;
 import com.haulmont.cuba.web.widgets.CubaCssActionsLayout;
 import de.diedavids.cuba.wizard.gui.components.Wizard;
@@ -18,9 +18,7 @@ import java.util.*;
 
 public class WebWizard extends WebCssLayout implements Wizard {
 
-
-
-    protected ComponentsFactory componentsFactory;
+    protected UiComponents uiComponents;
 
     protected Messages messages;
 
@@ -45,11 +43,10 @@ public class WebWizard extends WebCssLayout implements Wizard {
 
 
     public WebWizard() {
-        componentsFactory = AppBeans.get(ComponentsFactory.NAME);
+        uiComponents = AppBeans.get(UiComponents.NAME);
         messages = AppBeans.get(Messages.NAME);
 
         component = new CubaCssActionsLayout();
-
 
         createLayout();
         com.vaadin.ui.Component unwrap = WebComponentsHelper.getComposition(layoutWrapper);
@@ -117,7 +114,7 @@ public class WebWizard extends WebCssLayout implements Wizard {
 
     protected void createLayout() {
         if (tabSheetLayout == null) {
-            layoutWrapper = componentsFactory.createComponent(GroupBoxLayout.class);
+            layoutWrapper = uiComponents.create(GroupBoxLayout.class);
 
             layoutWrapper.setWidthFull();
             layoutWrapper.setHeightFull();
@@ -198,7 +195,7 @@ public class WebWizard extends WebCssLayout implements Wizard {
 
     private ButtonsPanel createWizardButtonPanel() {
 
-        ButtonsPanel wizardButtonsPanel = componentsFactory.createComponent(ButtonsPanel.class);
+        ButtonsPanel wizardButtonsPanel = uiComponents.create(ButtonsPanel.class);
         wizardButtonsPanel.setAlignment(Component.Alignment.TOP_RIGHT);
 
         wizardButtonsPanel.add(createCancelBtn());
@@ -346,7 +343,7 @@ public class WebWizard extends WebCssLayout implements Wizard {
 
 
     private Button createWizardControlBtn(String id) {
-        Button btn = componentsFactory.createComponent(Button.class);
+        Button btn = uiComponents.create(Button.class);
         btn.setId(id);
         btn.setCaption(messages.getMessage(this.getClass(), id + "BtnCaption"));
         btn.setIcon(messages.getMessage(this.getClass(), id + "BtnIcon"));
@@ -354,7 +351,7 @@ public class WebWizard extends WebCssLayout implements Wizard {
     }
 
     private TabSheet createTabSheetLayout() {
-        TabSheet tabSheetLayout = componentsFactory.createComponent(TabSheet.class);
+        TabSheet tabSheetLayout = uiComponents.create(TabSheet.class);
         tabSheetLayout.setWidth("100%");
         return tabSheetLayout;
     }
