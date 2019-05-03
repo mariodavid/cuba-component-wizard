@@ -1,20 +1,22 @@
 package de.diedavids.cuba.wizard.gui.components;
 
 import com.haulmont.cuba.gui.components.Component;
-import com.haulmont.cuba.gui.components.Frame;
+import com.haulmont.cuba.gui.components.OrderedContainer;
 
 import java.util.EventObject;
 
-public interface Wizard extends Component.OrderedContainer,
-                Component.HasIcon, Component.HasCaption {
+public interface Wizard extends OrderedContainer,
+        Component.HasIcon, Component.HasCaption {
     String NAME = "wizard";
 
     WizardStep addStep(int index, String name, WizardStepAware wizardStep);
+
     void addStep(int index, WizardStep wizardStep);
 
     WizardStep getStep(String stepId);
 
     void addWizardStepChangeListener(WizardStepChangeListener listener);
+
     void removeWizardStepChangeListener(WizardStepChangeListener listener);
 
     void removeStep(String name);
@@ -51,6 +53,7 @@ public interface Wizard extends Component.OrderedContainer,
 
 
     void addWizardCancelClickListener(WizardCancelClickListener listener);
+
     void removeWizardCancelClickListener(WizardCancelClickListener listener);
 
     class WizardCancelClickEvent extends EventObject {
@@ -70,9 +73,8 @@ public interface Wizard extends Component.OrderedContainer,
     }
 
 
-
-
     void addWizardFinishClickListener(WizardFinishClickListener listener);
+
     void removeWizardFinishClickListener(WizardFinishClickListener listener);
 
     class WizardFinishClickEvent extends EventObject {

@@ -1,10 +1,8 @@
 package de.diedavids.cuba.wizard.gui.xml.layout.loaders;
 
 import com.haulmont.cuba.core.global.AppBeans;
-import com.haulmont.cuba.gui.components.Component;
-import com.haulmont.cuba.gui.components.TabSheet;
+import com.haulmont.cuba.gui.UiComponents;
 import com.haulmont.cuba.gui.xml.layout.ComponentLoader;
-import com.haulmont.cuba.gui.xml.layout.ComponentsFactory;
 import com.haulmont.cuba.gui.xml.layout.loaders.ContainerLoader;
 import de.diedavids.cuba.wizard.gui.components.Wizard;
 import de.diedavids.cuba.wizard.gui.components.WizardStep;
@@ -18,11 +16,11 @@ public class WizardLoader extends ContainerLoader<Wizard> {
 
     protected Map<Element, WizardStep> pendingLoadSteps = new LinkedHashMap<>();
 
-    protected ComponentsFactory componentsFactory = AppBeans.get(ComponentsFactory.NAME);
+    protected UiComponents componentsFactory = AppBeans.get(UiComponents.NAME);
 
     @Override
     public void createComponent() {
-        resultComponent = factory.createComponent(Wizard.class);
+        resultComponent = factory.create(Wizard.class);
         loadId(resultComponent, element);
 
         List<Element> stepElements = element.elements("step");

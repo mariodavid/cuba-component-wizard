@@ -1,14 +1,20 @@
 package de.diedavids.cuba.wizard.web.screens.examples.example1.steps;
 
+import com.haulmont.cuba.gui.Notifications;
 import de.diedavids.cuba.wizard.gui.components.AbstractWizardStep;
 
+import javax.inject.Inject;
+
 public class Example1Step4 extends AbstractWizardStep {
+    @Inject
+    private Notifications notifications;
+
     public void buttonClick() {
-        showNotification("Hello 4");
+        notifications.create().withCaption("Hello 4").show();
     }
 
     @Override
     public void onActivate() {
-        showNotification("on activate step 4", NotificationType.TRAY);
+        //showNotification("on activate step 4", NotificationType.TRAY);
     }
 }

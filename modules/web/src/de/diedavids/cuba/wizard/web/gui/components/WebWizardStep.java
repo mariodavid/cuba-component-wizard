@@ -1,7 +1,8 @@
 package de.diedavids.cuba.wizard.web.gui.components;
 
-import com.haulmont.cuba.gui.components.Component;
+import com.haulmont.cuba.gui.components.Fragment;
 import com.haulmont.cuba.gui.components.TabSheet;
+import com.haulmont.cuba.gui.screen.ScreenFragment;
 import com.haulmont.cuba.web.gui.components.WebVBoxLayout;
 import de.diedavids.cuba.wizard.gui.components.WizardStep;
 import de.diedavids.cuba.wizard.gui.components.WizardStepAware;
@@ -34,7 +35,7 @@ public class WebWizardStep extends WebVBoxLayout implements WizardStep {
         this.id = name;
         this.name = name;
         this.stepComponent = stepComponent;
-        this.add((Component) stepComponent);
+        this.add(((ScreenFragment) stepComponent).getFragment());
     }
 
 
@@ -52,8 +53,7 @@ public class WebWizardStep extends WebVBoxLayout implements WizardStep {
         WizardStepAware wizardStepAware = getWizardStepAware();
         if (wizardStepAware != null) {
             return wizardStepAware.preClose();
-        }
-        else {
+        } else {
             return false;
         }
     }
@@ -66,9 +66,8 @@ public class WebWizardStep extends WebVBoxLayout implements WizardStep {
 
     private WizardStepAware getWizardStepAware() {
         if (ownComponents.size() > 0) {
-            return (WizardStepAware) ownComponents.get(0);
-        }
-        else {
+            return (WizardStepAware) ((Fragment) ownComponents.get(0)).getFrameOwner();
+        } else {
             return stepComponent;
         }
     }

@@ -1,14 +1,15 @@
 package de.diedavids.cuba.wizard.web.gui.components;
 
+import com.haulmont.bali.events.EventRouter;
 import com.haulmont.cuba.core.global.AppBeans;
 import com.haulmont.cuba.core.global.Messages;
+import com.haulmont.cuba.gui.UiComponents;
 import com.haulmont.cuba.gui.components.*;
 import com.haulmont.cuba.gui.components.actions.BaseAction;
-import com.haulmont.cuba.gui.xml.layout.ComponentsFactory;
 import com.haulmont.cuba.web.gui.components.WebComponentsHelper;
-import com.haulmont.cuba.web.toolkit.ui.CubaCssActionsLayout;
-import de.diedavids.cuba.wizard.gui.components.Wizard;
 import com.haulmont.cuba.web.gui.components.WebCssLayout;
+import com.haulmont.cuba.web.widgets.CubaCssActionsLayout;
+import de.diedavids.cuba.wizard.gui.components.Wizard;
 import de.diedavids.cuba.wizard.gui.components.WizardStep;
 import de.diedavids.cuba.wizard.gui.components.WizardStepAware;
 
@@ -17,8 +18,7 @@ import java.util.*;
 public class WebWizard extends WebCssLayout implements Wizard {
 
 
-
-    protected ComponentsFactory componentsFactory;
+    protected UiComponents componentsFactory;
 
     protected Messages messages;
 
@@ -40,10 +40,11 @@ public class WebWizard extends WebCssLayout implements Wizard {
     private BaseAction nextAction;
     private BaseAction prevAction;
     private BaseAction finishAction;
+    private EventRouter eventRouter = new EventRouter();
 
 
     public WebWizard() {
-        componentsFactory = AppBeans.get(ComponentsFactory.NAME);
+        componentsFactory = AppBeans.get(UiComponents.NAME);
         messages = AppBeans.get(Messages.NAME);
 
         component = new CubaCssActionsLayout();
@@ -53,8 +54,6 @@ public class WebWizard extends WebCssLayout implements Wizard {
         com.vaadin.ui.Component unwrap = WebComponentsHelper.getComposition(layoutWrapper);
         component.addComponent(unwrap);
     }
-
-
 
 
     @Override
@@ -80,42 +79,40 @@ public class WebWizard extends WebCssLayout implements Wizard {
 
     @Override
     public void addWizardStepChangeListener(WizardStepChangeListener listener) {
-        getEventRouter().addListener(WizardStepChangeListener.class, listener);
+        eventRouter.addListener(WizardStepChangeListener.class, listener);
     }
 
     @Override
     public void removeWizardStepChangeListener(WizardStepChangeListener listener) {
-        getEventRouter().removeListener(WizardStepChangeListener.class, listener);
+        eventRouter.removeListener(WizardStepChangeListener.class, listener);
     }
 
 
     @Override
     public void addWizardCancelClickListener(WizardCancelClickListener listener) {
-        getEventRouter().addListener(WizardCancelClickListener.class, listener);
+        eventRouter.addListener(WizardCancelClickListener.class, listener);
     }
 
     @Override
     public void removeWizardCancelClickListener(WizardCancelClickListener listener) {
-        getEventRouter().removeListener(WizardCancelClickListener.class, listener);
+        eventRouter.removeListener(WizardCancelClickListener.class, listener);
     }
 
 
     @Override
     public void addWizardFinishClickListener(WizardFinishClickListener listener) {
-        getEventRouter().addListener(WizardFinishClickListener.class, listener);
+        eventRouter.addListener(WizardFinishClickListener.class, listener);
     }
 
     @Override
     public void removeWizardFinishClickListener(WizardFinishClickListener listener) {
-        getEventRouter().removeListener(WizardFinishClickListener.class, listener);
+        eventRouter.removeListener(WizardFinishClickListener.class, listener);
     }
-
-
 
 
     protected void createLayout() {
         if (tabSheetLayout == null) {
-            layoutWrapper = componentsFactory.createComponent(GroupBoxLayout.class);
+            layoutWrapper = componentsFactory.create(GroupBoxLayout.class);
 
             layoutWrapper.setWidthFull();
             layoutWrapper.setHeightFull();
@@ -148,8 +145,8 @@ public class WebWizard extends WebCssLayout implements Wizard {
     }
 
     private void addWizardShortcutActions() {
-        layoutWrapper.addShortcutAction(new Component.ShortcutAction("CTRL-ALT-ARROW_RIGHT", shortcutTriggeredEvent -> nextAction.actionPerform(shortcutTriggeredEvent.getSource())));
-        layoutWrapper.addShortcutAction(new Component.ShortcutAction("CTRL-ALT-ARROW_LEFT", shortcutTriggeredEvent -> prevAction.actionPerform(shortcutTriggeredEvent.getSource())));
+        layoutWrapper.addShortcutAction(new ShortcutAction("CTRL-ALT-ARROW_RIGHT", shortcutTriggeredEvent -> nextAction.actionPerform(shortcutTriggeredEvent.getSource())));
+        layoutWrapper.addShortcutAction(new ShortcutAction("CTRL-ALT-ARROW_LEFT", shortcutTriggeredEvent -> prevAction.actionPerform(shortcutTriggeredEvent.getSource())));
     }
 
     private boolean isStepChangedAllowed() {
@@ -196,7 +193,7 @@ public class WebWizard extends WebCssLayout implements Wizard {
 
     private ButtonsPanel createWizardButtonPanel() {
 
-        ButtonsPanel wizardButtonsPanel = componentsFactory.createComponent(ButtonsPanel.class);
+        ButtonsPanel wizardButtonsPanel = componentsFactory.create(ButtonsPanel.class);
         wizardButtonsPanel.setAlignment(Component.Alignment.TOP_RIGHT);
 
         wizardButtonsPanel.add(createCancelBtn());
@@ -223,7 +220,7 @@ public class WebWizard extends WebCssLayout implements Wizard {
 
     private void handleCancelClick() {
         Wizard.WizardCancelClickEvent event = new Wizard.WizardCancelClickEvent(this);
-        getEventRouter().fireEvent(WizardCancelClickListener.class,
+        eventRouter.fireEvent(WizardCancelClickListener.class,
                 Wizard.WizardCancelClickListener::cancelClicked, event);
     }
 
@@ -253,7 +250,7 @@ public class WebWizard extends WebCssLayout implements Wizard {
 
 
             Wizard.WizardStepChangeEvent wizardStepChangeEvent = new Wizard.WizardStepChangeEvent(this, prevStep, step);
-            getEventRouter().fireEvent(WizardStepChangeListener.class,
+            eventRouter.fireEvent(WizardStepChangeListener.class,
                     Wizard.WizardStepChangeListener::stepChanged, wizardStepChangeEvent);
 
         }
@@ -294,7 +291,7 @@ public class WebWizard extends WebCssLayout implements Wizard {
 
     private void handleFinishClick() {
         Wizard.WizardFinishClickEvent finishClickEvent = new Wizard.WizardFinishClickEvent(this);
-        getEventRouter().fireEvent(WizardFinishClickListener.class,
+        eventRouter.fireEvent(WizardFinishClickListener.class,
                 Wizard.WizardFinishClickListener::finishClicked, finishClickEvent);
     }
 
@@ -347,7 +344,7 @@ public class WebWizard extends WebCssLayout implements Wizard {
 
 
     private Button createWizardControlBtn(String id) {
-        Button btn = componentsFactory.createComponent(Button.class);
+        Button btn = componentsFactory.create(Button.class);
         btn.setId(id);
         btn.setCaption(messages.getMessage(this.getClass(), id + "BtnCaption"));
         btn.setIcon(messages.getMessage(this.getClass(), id + "BtnIcon"));
@@ -355,7 +352,7 @@ public class WebWizard extends WebCssLayout implements Wizard {
     }
 
     private TabSheet createTabSheetLayout() {
-        TabSheet tabSheetLayout = componentsFactory.createComponent(TabSheet.class);
+        TabSheet tabSheetLayout = componentsFactory.create(TabSheet.class);
         tabSheetLayout.setWidth("100%");
         return tabSheetLayout;
     }

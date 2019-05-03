@@ -8,7 +8,7 @@ public class WizardStepLoader extends AbstractBoxLoader<WizardStep> {
 
     @Override
     public void createComponent() {
-        resultComponent = (WizardStep) factory.createComponent(WizardStep.NAME);
+        resultComponent = (WizardStep) factory.create(WizardStep.NAME);
         loadId(resultComponent, element);
         loadCaption(resultComponent, element);
         loadIcon(resultComponent, element);
