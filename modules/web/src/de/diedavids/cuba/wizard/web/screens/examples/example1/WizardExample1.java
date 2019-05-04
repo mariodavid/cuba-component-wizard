@@ -16,9 +16,6 @@ public class WizardExample1 extends AbstractWindow {
     protected Wizard wizard;
 
 
-    @Inject
-    protected UiComponents componentsFactory;
-
     @Override
     public void ready() {
         wizard.addWizardFinishClickListener(event -> {

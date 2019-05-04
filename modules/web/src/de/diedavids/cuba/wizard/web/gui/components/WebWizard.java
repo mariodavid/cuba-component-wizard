@@ -18,7 +18,7 @@ import java.util.*;
 public class WebWizard extends WebCssLayout implements Wizard {
 
 
-    protected UiComponents componentsFactory;
+    protected UiComponents uiComponents;
 
     protected Messages messages;
 
@@ -44,7 +44,7 @@ public class WebWizard extends WebCssLayout implements Wizard {
 
 
     public WebWizard() {
-        componentsFactory = AppBeans.get(UiComponents.NAME);
+        uiComponents = AppBeans.get(UiComponents.NAME);
         messages = AppBeans.get(Messages.NAME);
 
         component = new CubaCssActionsLayout();
@@ -112,7 +112,7 @@ public class WebWizard extends WebCssLayout implements Wizard {
 
     protected void createLayout() {
         if (tabSheetLayout == null) {
-            layoutWrapper = componentsFactory.create(GroupBoxLayout.class);
+            layoutWrapper = uiComponents.create(GroupBoxLayout.class);
 
             layoutWrapper.setWidthFull();
             layoutWrapper.setHeightFull();
@@ -193,7 +193,7 @@ public class WebWizard extends WebCssLayout implements Wizard {
 
     private ButtonsPanel createWizardButtonPanel() {
 
-        ButtonsPanel wizardButtonsPanel = componentsFactory.create(ButtonsPanel.class);
+        ButtonsPanel wizardButtonsPanel = uiComponents.create(ButtonsPanel.class);
         wizardButtonsPanel.setAlignment(Component.Alignment.TOP_RIGHT);
 
         wizardButtonsPanel.add(createCancelBtn());
@@ -344,7 +344,7 @@ public class WebWizard extends WebCssLayout implements Wizard {
 
 
     private Button createWizardControlBtn(String id) {
-        Button btn = componentsFactory.create(Button.class);
+        Button btn = uiComponents.create(Button.class);
         btn.setId(id);
         btn.setCaption(messages.getMessage(this.getClass(), id + "BtnCaption"));
         btn.setIcon(messages.getMessage(this.getClass(), id + "BtnIcon"));
@@ -352,7 +352,7 @@ public class WebWizard extends WebCssLayout implements Wizard {
     }
 
     private TabSheet createTabSheetLayout() {
-        TabSheet tabSheetLayout = componentsFactory.create(TabSheet.class);
+        TabSheet tabSheetLayout = uiComponents.create(TabSheet.class);
         tabSheetLayout.setWidth("100%");
         return tabSheetLayout;
     }

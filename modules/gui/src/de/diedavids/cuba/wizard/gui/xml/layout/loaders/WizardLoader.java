@@ -16,8 +16,6 @@ public class WizardLoader extends ContainerLoader<Wizard> {
 
     protected Map<Element, WizardStep> pendingLoadSteps = new LinkedHashMap<>();
 
-    protected UiComponents componentsFactory = AppBeans.get(UiComponents.NAME);
-
     @Override
     public void createComponent() {
         resultComponent = factory.create(Wizard.class);
