@@ -53,6 +53,8 @@ public class WebWizard extends WebCssLayout implements Wizard {
         createLayout();
         com.vaadin.ui.Component unwrap = WebComponentsHelper.getComposition(layoutWrapper);
         component.addComponent(unwrap);
+
+
     }
 
 
@@ -380,13 +382,8 @@ public class WebWizard extends WebCssLayout implements Wizard {
         tabIndexByName.put(name, index);
         tab.setCaption(wizardStep.getCaption());
 
+        disableTab(tab);
 
-        if (tabListHasOnlyThisTab(tab)) {
-            enableTab(tab);
-            activateStep(wizardStep);
-        } else {
-            disableTab(tab);
-        }
     }
 
 
@@ -406,10 +403,14 @@ public class WebWizard extends WebCssLayout implements Wizard {
 
     }
 
+    @Override
+    public void init() {
+        TabSheet.Tab tab = findTab(0);
 
-    private boolean tabListHasOnlyThisTab(TabSheet.Tab tab) {
-        return tabList.size() == 1 && tabList.get(0).equals(tab);
+        if (tab != null) {
+            enableTab(tab);
+        }
+
     }
-
 
 }

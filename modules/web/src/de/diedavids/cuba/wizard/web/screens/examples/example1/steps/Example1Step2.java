@@ -17,7 +17,7 @@ public class Example1Step2 extends AbstractWizardStep {
 
     @Override
     public void onActivate() {
-        //showNotification("on activate step 2");
+        notifications.create().withCaption("onActivate #2").show();
     }
 
     @Subscribe

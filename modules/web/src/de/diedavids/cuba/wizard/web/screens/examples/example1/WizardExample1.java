@@ -12,8 +12,10 @@ import javax.inject.Inject;
 public class WizardExample1 extends AbstractWindow {
     @Inject
     protected Fragments fragments;
+
     @Inject
     protected Wizard wizard;
+
 
 
     @Override

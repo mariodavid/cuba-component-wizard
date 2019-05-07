@@ -2,8 +2,10 @@ package de.diedavids.cuba.wizard.gui.xml.layout.loaders;
 
 import com.haulmont.cuba.core.global.AppBeans;
 import com.haulmont.cuba.gui.UiComponents;
+import com.haulmont.cuba.gui.components.Frame;
 import com.haulmont.cuba.gui.xml.layout.ComponentLoader;
 import com.haulmont.cuba.gui.xml.layout.loaders.ContainerLoader;
+import com.haulmont.cuba.gui.xml.layout.loaders.LoadPresentationsPostInitTask;
 import de.diedavids.cuba.wizard.gui.components.Wizard;
 import de.diedavids.cuba.wizard.gui.components.WizardStep;
 import org.dom4j.Element;
@@ -54,6 +56,11 @@ public class WizardLoader extends ContainerLoader<Wizard> {
         }
 
         loadSubComponents();
+
+        context.addPostInitTask((context, window) -> resultComponent.init());
+
+
+
     }
 
 }

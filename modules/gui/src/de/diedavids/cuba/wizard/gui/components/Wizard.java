@@ -21,6 +21,8 @@ public interface Wizard extends OrderedContainer,
 
     void removeStep(String name);
 
+    void init();
+
     class WizardStepChangeEvent extends EventObject {
 
         WizardStep prevStep;

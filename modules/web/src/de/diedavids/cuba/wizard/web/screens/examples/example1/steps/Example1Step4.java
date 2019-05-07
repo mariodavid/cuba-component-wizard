@@ -6,6 +6,7 @@ import de.diedavids.cuba.wizard.gui.components.AbstractWizardStep;
 import javax.inject.Inject;
 
 public class Example1Step4 extends AbstractWizardStep {
+
     @Inject
     private Notifications notifications;
 
@@ -15,6 +16,9 @@ public class Example1Step4 extends AbstractWizardStep {
 
     @Override
     public void onActivate() {
-        //showNotification("on activate step 4", NotificationType.TRAY);
+        notifications
+                .create()
+                .withCaption("on activate step 4")
+                .show();
     }
 }
