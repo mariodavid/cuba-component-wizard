@@ -1,14 +1,18 @@
 package de.diedavids.cuba.wizard.gui.xml.layout.loaders;
 
+import com.haulmont.cuba.core.global.AppBeans;
+import com.haulmont.cuba.gui.UiComponents;
 import com.haulmont.cuba.gui.xml.layout.loaders.AbstractBoxLoader;
 import de.diedavids.cuba.wizard.gui.components.WizardStep;
 import org.dom4j.Element;
 
 public class WizardStepLoader extends AbstractBoxLoader<WizardStep> {
 
+    protected UiComponents uiComponents = AppBeans.get(UiComponents.NAME);
+
     @Override
     public void createComponent() {
-        resultComponent = (WizardStep) factory.createComponent(WizardStep.NAME);
+        resultComponent = uiComponents.create(WizardStep.NAME);
         loadId(resultComponent, element);
         loadCaption(resultComponent, element);
         loadIcon(resultComponent, element);

@@ -3,5 +3,6 @@
     <menu id="application"
           insertBefore="administration">
         <item screen="wizard-example-1"/>
+        <item screen="ddcw_FrameScreen"/>
     </menu>
 </menu-config>

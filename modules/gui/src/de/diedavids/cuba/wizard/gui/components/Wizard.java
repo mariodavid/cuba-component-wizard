@@ -2,14 +2,15 @@ package de.diedavids.cuba.wizard.gui.components;
 
 import com.haulmont.cuba.gui.components.Component;
 import com.haulmont.cuba.gui.components.Frame;
+import com.haulmont.cuba.gui.components.OrderedContainer;
 
 import java.util.EventObject;
 
-public interface Wizard extends Component.OrderedContainer,
+public interface Wizard extends OrderedContainer,
                 Component.HasIcon, Component.HasCaption {
     String NAME = "wizard";
 
-    WizardStep addStep(int index, String name, WizardStepAware wizardStep);
+    WizardStep addStep(int index, String name, AbstractWizardStep wizardStep);
     void addStep(int index, WizardStep wizardStep);
 
     WizardStep getStep(String stepId);
@@ -18,6 +19,8 @@ public interface Wizard extends Component.OrderedContainer,
     void removeWizardStepChangeListener(WizardStepChangeListener listener);
 
     void removeStep(String name);
+
+    void init();
 
     class WizardStepChangeEvent extends EventObject {
 
@@ -45,8 +48,8 @@ public interface Wizard extends Component.OrderedContainer,
     }
 
     @FunctionalInterface
-    interface WizardStepChangeListener {
-        void stepChanged(Wizard.WizardStepChangeEvent event);
+    interface WizardStepChangeListener extends java.util.function.Consumer<Wizard.WizardStepChangeEvent> {
+        void accept(Wizard.WizardStepChangeEvent event);
     }
 
 
@@ -65,8 +68,8 @@ public interface Wizard extends Component.OrderedContainer,
     }
 
     @FunctionalInterface
-    interface WizardCancelClickListener {
-        void cancelClicked(Wizard.WizardCancelClickEvent event);
+    interface WizardCancelClickListener extends java.util.function.Consumer<Wizard.WizardCancelClickEvent> {
+        void accept(Wizard.WizardCancelClickEvent event);
     }
 
 
@@ -87,7 +90,7 @@ public interface Wizard extends Component.OrderedContainer,
     }
 
     @FunctionalInterface
-    interface WizardFinishClickListener {
-        void finishClicked(Wizard.WizardFinishClickEvent event);
+    interface WizardFinishClickListener extends java.util.function.Consumer<Wizard.WizardFinishClickEvent> {
+        void accept(Wizard.WizardFinishClickEvent event);
     }
 }

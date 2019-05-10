@@ -2,13 +2,14 @@ package de.diedavids.cuba.wizard.web.gui.components;
 
 import com.haulmont.cuba.gui.components.Component;
 import com.haulmont.cuba.gui.components.TabSheet;
+import com.haulmont.cuba.web.gui.components.WebFragment;
 import com.haulmont.cuba.web.gui.components.WebVBoxLayout;
+import de.diedavids.cuba.wizard.gui.components.AbstractWizardStep;
 import de.diedavids.cuba.wizard.gui.components.WizardStep;
-import de.diedavids.cuba.wizard.gui.components.WizardStepAware;
 
 public class WebWizardStep extends WebVBoxLayout implements WizardStep {
     private String name;
-    private WizardStepAware stepComponent;
+    private AbstractWizardStep stepComponent;
     private TabSheet.Tab tabComponent;
 
     public WebWizardStep() {
@@ -30,7 +31,7 @@ public class WebWizardStep extends WebVBoxLayout implements WizardStep {
         }
     }
 
-    public WebWizardStep(String name, WizardStepAware stepComponent) {
+    public WebWizardStep(String name, AbstractWizardStep stepComponent) {
         this.id = name;
         this.name = name;
         this.stepComponent = stepComponent;
@@ -40,20 +41,19 @@ public class WebWizardStep extends WebVBoxLayout implements WizardStep {
 
     @Override
     public void onActivate() {
-        WizardStepAware wizardStepAware = getWizardStepAware();
-        if (wizardStepAware != null) {
-            wizardStepAware.onActivate();
+        AbstractWizardStep wizardStep = getWizardStep();
+        if (wizardStep != null) {
+            wizardStep.onActivate();
         }
     }
 
 
     @Override
     public boolean preClose() {
-        WizardStepAware wizardStepAware = getWizardStepAware();
-        if (wizardStepAware != null) {
-            return wizardStepAware.preClose();
-        }
-        else {
+        AbstractWizardStep wizardStep = getWizardStep();
+        if (wizardStep != null) {
+            return wizardStep.preClose();
+        } else {
             return false;
         }
     }
@@ -64,12 +64,32 @@ public class WebWizardStep extends WebVBoxLayout implements WizardStep {
     }
 
 
-    private WizardStepAware getWizardStepAware() {
-        if (ownComponents.size() > 0) {
-            return (WizardStepAware) ownComponents.get(0);
-        }
-        else {
+    private AbstractWizardStep getWizardStep() {
+        if (isInitialized()) {
+            if (wasProgrammagicallyAdded()) {
+                return getWizardStepInstanceForProgrammaticAddedFrames();
+            } else {
+                return getWizardStepInstanceLoadedViaXml();
+            }
+
+        } else {
             return stepComponent;
         }
+    }
+
+    private boolean isInitialized() {
+        return ownComponents.size() > 0;
+    }
+
+    private boolean wasProgrammagicallyAdded() {
+        return ownComponents.get(0) instanceof AbstractWizardStep;
+    }
+
+    private AbstractWizardStep getWizardStepInstanceLoadedViaXml() {
+        return (AbstractWizardStep) ((WebFragment) ownComponents.get(0)).getFrameOwner();
+    }
+
+    private AbstractWizardStep getWizardStepInstanceForProgrammaticAddedFrames() {
+        return (AbstractWizardStep) ownComponents.get(0);
     }
 }

@@ -3,6 +3,7 @@ package de.diedavids.cuba.wizard.web.screens.examples.example1.steps;
 import de.diedavids.cuba.wizard.gui.components.AbstractWizardStep;
 
 public class Example1Step3 extends AbstractWizardStep {
+
     public void buttonClick() {
         showNotification("Hello 3");
     }
