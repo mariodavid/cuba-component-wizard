@@ -65,18 +65,31 @@ public class WebWizardStep extends WebVBoxLayout implements WizardStep {
 
 
     private AbstractWizardStep getWizardStep() {
-        if (ownComponents.size() > 0) {
-
-            if (ownComponents.get(0) instanceof AbstractWizardStep) {
-                // case: programmatic added steps afterwards via openFrame
-                return (AbstractWizardStep) ownComponents.get(0);
+        if (isInitialized()) {
+            if (wasProgrammagicallyAdded()) {
+                return getWizardStepInstanceForProgrammaticAddedFrames();
             } else {
-                // case: initial loading via XML
-                return (AbstractWizardStep) ((WebFragment) ownComponents.get(0)).getFrameOwner();
+                return getWizardStepInstanceLoadedViaXml();
             }
 
         } else {
             return stepComponent;
         }
+    }
+
+    private boolean isInitialized() {
+        return ownComponents.size() > 0;
+    }
+
+    private boolean wasProgrammagicallyAdded() {
+        return ownComponents.get(0) instanceof AbstractWizardStep;
+    }
+
+    private AbstractWizardStep getWizardStepInstanceLoadedViaXml() {
+        return (AbstractWizardStep) ((WebFragment) ownComponents.get(0)).getFrameOwner();
+    }
+
+    private AbstractWizardStep getWizardStepInstanceForProgrammaticAddedFrames() {
+        return (AbstractWizardStep) ownComponents.get(0);
     }
 }
