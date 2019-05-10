@@ -7,6 +7,7 @@ import com.haulmont.cuba.gui.components.*;
 import com.haulmont.cuba.gui.components.actions.BaseAction;
 import com.haulmont.cuba.web.gui.components.WebComponentsHelper;
 import com.haulmont.cuba.web.widgets.CubaCssActionsLayout;
+import de.diedavids.cuba.wizard.gui.components.AbstractWizardStep;
 import de.diedavids.cuba.wizard.gui.components.Wizard;
 import com.haulmont.cuba.web.gui.components.WebCssLayout;
 import de.diedavids.cuba.wizard.gui.components.WizardStep;
@@ -23,6 +24,7 @@ public class WebWizard extends WebCssLayout implements Wizard {
     protected Messages messages;
 
     protected GroupBoxLayout layoutWrapper;
+
     protected TabSheet tabSheetLayout;
 
 
@@ -358,7 +360,7 @@ public class WebWizard extends WebCssLayout implements Wizard {
 
 
     @Override
-    public WizardStep addStep(int index, String name, WizardStepAware wizardStepAware) {
+    public WizardStep addStep(int index, String name, AbstractWizardStep wizardStepAware) {
         WebWizardStep wizardStep = new WebWizardStep(name, wizardStepAware);
         addStep(index, wizardStep);
         return wizardStep;
@@ -379,13 +381,7 @@ public class WebWizard extends WebCssLayout implements Wizard {
         tabIndexByName.put(name, index);
         tab.setCaption(wizardStep.getCaption());
 
-
-        if (tabListHasOnlyThisTab(tab)) {
-            enableTab(tab);
-            activateStep(wizardStep);
-        } else {
-            disableTab(tab);
-        }
+        disableTab(tab);
     }
 
 
@@ -405,10 +401,14 @@ public class WebWizard extends WebCssLayout implements Wizard {
 
     }
 
+    @Override
+    public void init() {
+        TabSheet.Tab tab = findTab(0);
 
-    private boolean tabListHasOnlyThisTab(TabSheet.Tab tab) {
-        return tabList.size() == 1 && tabList.get(0).equals(tab);
+        if (tab != null) {
+            enableTab(tab);
+        }
+
     }
-
 
 }

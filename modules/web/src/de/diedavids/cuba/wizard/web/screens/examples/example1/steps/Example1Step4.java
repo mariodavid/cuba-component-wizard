@@ -7,17 +7,6 @@ import javax.inject.Inject;
 
 public class Example1Step4 extends AbstractWizardStep {
 
-
-    @Inject
-    protected Notifications notifications;
-
-
-    private void showNotification(String message) {
-        notifications.create(Notifications.NotificationType.TRAY)
-                .withCaption(message)
-                .show();
-    }
-
     public void buttonClick() {
         showNotification("Hello 4");
     }

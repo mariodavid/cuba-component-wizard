@@ -56,6 +56,9 @@ public class WizardLoader extends ContainerLoader<Wizard> {
         }
 
         loadSubComponents();
+
+        context.addPostInitTask((context, window) -> resultComponent.init());
+
     }
 
 }

@@ -10,7 +10,7 @@ public interface Wizard extends OrderedContainer,
                 Component.HasIcon, Component.HasCaption {
     String NAME = "wizard";
 
-    WizardStep addStep(int index, String name, WizardStepAware wizardStep);
+    WizardStep addStep(int index, String name, AbstractWizardStep wizardStep);
     void addStep(int index, WizardStep wizardStep);
 
     WizardStep getStep(String stepId);
@@ -19,6 +19,8 @@ public interface Wizard extends OrderedContainer,
     void removeWizardStepChangeListener(WizardStepChangeListener listener);
 
     void removeStep(String name);
+
+    void init();
 
     class WizardStepChangeEvent extends EventObject {
 

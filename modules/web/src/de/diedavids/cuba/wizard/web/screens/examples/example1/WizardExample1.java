@@ -3,6 +3,7 @@ package de.diedavids.cuba.wizard.web.screens.examples.example1;
 import com.haulmont.cuba.gui.Fragments;
 import com.haulmont.cuba.gui.Notifications;
 import com.haulmont.cuba.gui.UiComponents;
+import com.haulmont.cuba.gui.components.AbstractFrame;
 import com.haulmont.cuba.gui.components.AbstractWindow;
 import com.haulmont.cuba.gui.screen.ScreenFragment;
 import com.haulmont.cuba.gui.xml.layout.ComponentsFactory;
@@ -21,8 +22,6 @@ public class WizardExample1 extends AbstractWindow {
 
     @Inject
     protected Notifications notifications;
-    @Inject
-    protected Fragments fragments;
 
     @Override
     public void ready() {
@@ -49,7 +48,7 @@ public class WizardExample1 extends AbstractWindow {
         });
 
 
-        WizardStepAware screenFragment = fragments.create(this, Example1Step4.class);
+        AbstractWizardStep screenFragment = (AbstractWizardStep) openFrame(null, "example-1-step-4-frame");
 
 
         WizardStep wizardStep = wizard.addStep(3, "step4", screenFragment);
