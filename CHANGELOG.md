@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 10/05/2019
+
+
+### Added
+- `AbstractWizard` as a super controller class for Wizard controllers (`de.diedavids.cuba.wizard.web.screens.AbstractWizard`)
+
+### Deprecated
+- `WizardStepAware` is no longer necessary. Use `AbstractWizardStep` directly instead.
+
+### Dependencies
+- CUBA 7.0.x
+
+
 ## [0.3.0] - 03/02/2019
 
 ### Dependencies

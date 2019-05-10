@@ -28,7 +28,8 @@ For more information on this topic see: http://ui-patterns.com/patterns/Wizard
 
 | Platform Version | Add-on Version |
 | ---------------- | -------------- |
-| 6.9.x            | 0.3.x          |
+| 7.0.x            | 0.4.x          |
+| 6.10.x           | 0.3.x          |
 | 6.9.x            | 0.2.x          |
 | 6.8.x            | 0.1.x          |
 
