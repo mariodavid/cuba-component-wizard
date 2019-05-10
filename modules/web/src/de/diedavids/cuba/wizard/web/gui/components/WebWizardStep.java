@@ -6,7 +6,6 @@ import com.haulmont.cuba.web.gui.components.WebFragment;
 import com.haulmont.cuba.web.gui.components.WebVBoxLayout;
 import de.diedavids.cuba.wizard.gui.components.AbstractWizardStep;
 import de.diedavids.cuba.wizard.gui.components.WizardStep;
-import de.diedavids.cuba.wizard.gui.components.WizardStepAware;
 
 public class WebWizardStep extends WebVBoxLayout implements WizardStep {
     private String name;
@@ -42,18 +41,18 @@ public class WebWizardStep extends WebVBoxLayout implements WizardStep {
 
     @Override
     public void onActivate() {
-        AbstractWizardStep wizardStepAware = getWizardStepAware();
-        if (wizardStepAware != null) {
-            wizardStepAware.onActivate();
+        AbstractWizardStep wizardStep = getWizardStep();
+        if (wizardStep != null) {
+            wizardStep.onActivate();
         }
     }
 
 
     @Override
     public boolean preClose() {
-        AbstractWizardStep wizardStepAware = getWizardStepAware();
-        if (wizardStepAware != null) {
-            return wizardStepAware.preClose();
+        AbstractWizardStep wizardStep = getWizardStep();
+        if (wizardStep != null) {
+            return wizardStep.preClose();
         } else {
             return false;
         }
@@ -65,7 +64,7 @@ public class WebWizardStep extends WebVBoxLayout implements WizardStep {
     }
 
 
-    private AbstractWizardStep getWizardStepAware() {
+    private AbstractWizardStep getWizardStep() {
         if (ownComponents.size() > 0) {
 
             if (ownComponents.get(0) instanceof AbstractWizardStep) {

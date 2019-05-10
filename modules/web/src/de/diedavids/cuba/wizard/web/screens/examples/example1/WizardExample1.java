@@ -11,11 +11,12 @@ import de.diedavids.cuba.wizard.gui.components.AbstractWizardStep;
 import de.diedavids.cuba.wizard.gui.components.Wizard;
 import de.diedavids.cuba.wizard.gui.components.WizardStep;
 import de.diedavids.cuba.wizard.gui.components.WizardStepAware;
+import de.diedavids.cuba.wizard.web.screens.AbstractWizard;
 import de.diedavids.cuba.wizard.web.screens.examples.example1.steps.Example1Step4;
 
 import javax.inject.Inject;
 
-public class WizardExample1 extends AbstractWindow {
+public class WizardExample1 extends AbstractWizard {
 
     @Inject
     protected Wizard wizard;
@@ -48,8 +49,7 @@ public class WizardExample1 extends AbstractWindow {
         });
 
 
-        AbstractWizardStep screenFragment = (AbstractWizardStep) openFrame(null, "example-1-step-4-frame");
-
+        AbstractWizardStep screenFragment = createStep("example-1-step-4-frame");
 
         WizardStep wizardStep = wizard.addStep(3, "step4", screenFragment);
         wizardStep.setId("step4");
