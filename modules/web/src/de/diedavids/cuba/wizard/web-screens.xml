@@ -1,14 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <screen-config xmlns="http://schemas.haulmont.com/cuba/screens.xsd">
     <include file="de/diedavids/cuba/wizard/screens.xml"/>
-    <screen id="wizard-example-1"
-            template="de/diedavids/cuba/wizard/web/screens/examples/example1/wizard-example-1.xml"/>
-    <screen id="example-1-step-1-frame"
-            template="/de/diedavids/cuba/wizard/web/screens/examples/example1/steps/example-1-step-1.xml"/>
-    <screen id="example-1-step-2-frame"
-            template="de/diedavids/cuba/wizard/web/screens/examples/example1/steps/example-1-step-2.xml"/>
-    <screen id="example-1-step-3-frame"
-            template="de/diedavids/cuba/wizard/web/screens/examples/example1/steps/example-1-step-3.xml"/>
-    <screen id="example-1-step-4-frame"
-            template="de/diedavids/cuba/wizard/web/screens/examples/example1/steps/example-1-step-4.xml"/>
 </screen-config>
