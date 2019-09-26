@@ -3,6 +3,7 @@ package de.diedavids.cuba.wizard.gui.xml.layout.loaders;
 import com.haulmont.cuba.core.global.AppBeans;
 import com.haulmont.cuba.gui.UiComponents;
 import com.haulmont.cuba.gui.xml.layout.ComponentLoader;
+import com.haulmont.cuba.gui.xml.layout.LayoutLoader;
 import com.haulmont.cuba.gui.xml.layout.loaders.ContainerLoader;
 import de.diedavids.cuba.wizard.gui.components.Wizard;
 import de.diedavids.cuba.wizard.gui.components.WizardStep;
@@ -28,7 +29,9 @@ public class WizardLoader extends ContainerLoader<Wizard> {
         int i = 0;
         for (Element stepElement : stepElements) {
 
-            ComponentLoader stepComponentLoader = getLoader(stepElement, WizardStepLoader.class);
+            LayoutLoader layoutLoader = getLayoutLoader();
+
+            ComponentLoader stepComponentLoader = layoutLoader.getLoader(stepElement, WizardStepLoader.class);
             stepComponentLoader.createComponent();
 
             WizardStep stepComponent = (WizardStep) stepComponentLoader.getResultComponent();
@@ -57,7 +60,7 @@ public class WizardLoader extends ContainerLoader<Wizard> {
 
         loadSubComponents();
 
-        context.addPostInitTask((context, window) -> resultComponent.init());
+        getComponentContext().addPostInitTask((context, window) -> resultComponent.init());
 
     }
 
