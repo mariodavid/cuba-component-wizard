@@ -9,4 +9,4 @@ To create a release of this application component do the following:
 2. wait for travis to be build
 3a. `./gradlew release -Prelease.useAutomaticVersion=true` to update to next patch version (0.3.2)
 3b.  `./gradlew release -Prelease.useAutomaticVersion=true -PreleaseVersion=0.4.0 -PnewVersion=0.4.1-SNAPSHOT` to update to next minor version (0.4.0)
-4. Update the title "version 0.3.1" and description of the tag in the Github UI
+4. `hub release create -m "version 0.3.1"`
