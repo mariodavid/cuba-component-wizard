@@ -1,28 +1,39 @@
 
 buildscript {
-    ext.cubaVersion = '7.1.0'
+    ext.cubaVersion = '7.2.0'
     repositories {
-        mavenCentral()
+
+        mavenLocal()
         maven {
+            url "https://dl.bintray.com/mariodavid/cuba-components"
+        }
+        maven {
+
+
             url 'https://repo.cuba-platform.com/content/groups/work'
             credentials {
                 username(rootProject.hasProperty('repoUser') ? rootProject['repoUser'] : 'cuba')
                 password(rootProject.hasProperty('repoPass') ? rootProject['repoPass'] : 'cuba123')
             }
         }
-        
+
     }
     dependencies {
         classpath "com.haulmont.gradle:cuba-plugin:$cubaVersion"
 
         classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.0"
+
+        classpath 'net.saliman:gradle-cobertura-plugin:2.5.0'
+        classpath "org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.8.2"
     }
 }
 
 
 plugins {
-    id 'net.researchgate.release' version '2.1.2'
+    id 'net.researchgate.release' version '2.8.0'
 }
+
+apply plugin: "com.github.kt3k.coveralls"
 
 def modulePrefix = 'wizard'
 
@@ -45,18 +56,14 @@ cuba {
     tomcat {
         dir = "$project.rootDir/deploy/tomcat"
     }
-    ide {
-        vcs = 'Git'
-    }
 }
-
 
 subprojects {
     apply plugin: 'com.jfrog.bintray'
 
     bintray {
-        user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('UPLOAD_REPOSITORY_USERNAME')
-        key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('UPLOAD_REPOSITORY_PASSWORD')
+        user = System.getenv('BINTRAY_USERNAME')
+        key = System.getenv('BINTRAY_PASSWORD')
 
         configurations = ['archives']
 
@@ -91,7 +98,6 @@ subprojects {
     }
 }
 
-
 dependencies {
     appComponent("com.haulmont.cuba:cuba-global:$cubaVersion")
 
@@ -99,17 +105,47 @@ dependencies {
 
 def hsql = 'org.hsqldb:hsqldb:2.4.1'
 
+allprojects {
+    apply plugin: 'net.saliman.cobertura'
+}
+
+
+def files = subprojects
+        .findAll { !it.name.toLowerCase().contains('theme') }
+        .collect { new File(it.projectDir, '/build/cobertura/cobertura.ser') }
+def sourceDirs = subprojects
+        .findAll { !it.name.toLowerCase().contains('theme') }
+        .collect { new File(it.projectDir, '/src') }
+
+cobertura {
+    coverageFormats = ['html', 'xml']
+    coverageMergeDatafiles = files
+    coverageCheckTotalBranchRate = 0
+    coverageCheckTotalLineRate = 0
+    coverageCheckHaltOnFailure = true
+    coverageSourceDirs = sourceDirs
+//    coverageCheckLineRate = 1
+    coverageCheckRegexes = [[regex: '.*\\$.*', branchRate: 0, lineRate: 0]]
+
+}
+
+
+test.dependsOn(subprojects.collect { ":${it.name}:test" })
+test.finalizedBy(project.tasks.cobertura)
+test.finalizedBy(project.tasks.coberturaCheck)
+
+
 configure([globalModule, coreModule, guiModule, webModule]) {
     apply(plugin: 'java')
     apply(plugin: 'maven')
     apply(plugin: 'cuba')
 
     dependencies {
+
         testCompile('junit:junit:4.12')
+        testCompile 'org.assertj:assertj-core:2.9.0'
 
-
-
-        testCompile('org.spockframework:spock-core:1.0-groovy-2.4')
+        testCompile('org.spockframework:spock-core:1.2-groovy-2.5')
         testCompile('org.springframework:spring-test:4.3.1.RELEASE')
         testRuntime "cglib:cglib-nodep:3.2.4"
     }
@@ -124,6 +160,29 @@ configure([globalModule, coreModule, guiModule, webModule]) {
     }
 }
 
+configure([globalModule, coreModule, webModule]) {
+    apply(plugin: 'groovy')
+
+    sourceSets {
+        main {
+            groovy { srcDirs = ["src"] }
+            // new config
+            java.outputDir = new File(project.buildDir, "classes/main")
+            groovy.outputDir = new File(project.buildDir, "classes/main")
+        }
+        test {
+            groovy { srcDirs = ["test"] }
+            // new config
+            java.outputDir = new File(project.buildDir, "classes/test")
+            groovy.outputDir = new File(project.buildDir, "classes/test")
+        }
+    }
+
+    sourceSets.main.output.classesDirs.setFrom(new File(project.buildDir, "classes/main"))
+    sourceSets.test.output.classesDirs.setFrom(new File(project.buildDir, "classes/test"))
+
+}
+
 configure(globalModule) {
     dependencies {
         if (!JavaVersion.current().isJava8()) {
@@ -131,18 +190,19 @@ configure(globalModule) {
             runtime('org.glassfish.jaxb:jaxb-runtime:2.3.1')
         }
     }
+
     entitiesEnhancing {
-        main { enabled = true }
+        main {
+            enabled = true
+        }
     }
 
-    
     jar {
         manifest {
             attributes('App-Component-Id': cuba.artifact.group)
             attributes('App-Component-Version': cuba.artifact.version + (cuba.artifact.isSnapshot ? '-SNAPSHOT' : ''))
         }
     }
-    
 }
 
 configure(coreModule) {
@@ -157,18 +217,10 @@ configure(coreModule) {
         compileOnly(servletApi)
         jdbc(hsql)
         testRuntime(hsql)
-
     }
 
-    task cleanConf(description: 'Cleans up conf directory') {
-        doLast {
-            def dir = new File(cuba.tomcat.dir, "/conf/${modulePrefix}-core")
-            if (dir.isDirectory()) {
-                ant.delete(includeemptydirs: true) {
-                    fileset(dir: dir, includes: '**/*', excludes: 'local.app.properties')
-                }
-            }
-        }
+    task cleanConf(description: 'Cleans up conf directory', type: Delete) {
+        delete "$cuba.appHome/${modulePrefix}-core/conf"
     }
 
     task deploy(dependsOn: [assemble, cleanConf], type: CubaDeployment) {
@@ -202,7 +254,7 @@ configure(guiModule) {
     task deployConf(type: Copy) {
         from file('src')
         include "de/diedavids/cuba/wizard/**"
-        into "$cuba.tomcat.dir/conf/${modulePrefix}"
+        into "$cuba.appHome/${modulePrefix}/conf"
     }
 }
 
@@ -230,7 +282,7 @@ configure(webModule) {
     task deployConf(type: Copy) {
         from file('src')
         include "de/diedavids/cuba/wizard/**"
-        into "$cuba.tomcat.dir/conf/${modulePrefix}"
+        into "$cuba.appHome/${modulePrefix}/conf"
     }
 
     task clearMessagesCache(type: CubaClearMessagesCache) {
@@ -238,15 +290,8 @@ configure(webModule) {
     }
     deployConf.dependsOn clearMessagesCache
 
-    task cleanConf(description: 'Cleans up conf directory') {
-        doLast {
-            def dir = new File(cuba.tomcat.dir, "/conf/${modulePrefix}")
-            if (dir.isDirectory()) {
-                ant.delete(includeemptydirs: true) {
-                    fileset(dir: dir, includes: '**/*', excludes: 'local.app.properties')
-                }
-            }
-        }
+    task cleanConf(description: 'Cleans up conf directory', type: Delete) {
+        delete "$cuba.appHome/${modulePrefix}/conf"
     }
 
     task deploy(dependsOn: [assemble, cleanConf], type: CubaDeployment) {
@@ -269,9 +314,11 @@ task restart(dependsOn: ['stop', ":${modulePrefix}-core:deploy", ":${modulePrefi
                 socket(server: 'localhost', port: '8787')
             }
         }
-        start.execute()
     }
 }
+restart.finalizedBy start
 
 
-
+clean {
+    delete = ['build/libs', 'build/tmp']
+}
