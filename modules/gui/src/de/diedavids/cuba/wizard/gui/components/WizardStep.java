@@ -10,6 +10,10 @@ public interface WizardStep extends VBoxLayout {
 
     boolean preClose();
 
+    boolean preClosePreviousClicked();
+
+    boolean preCloseNextClicked();
+
     void setWrapperComponent(TabSheet.Tab tabComponent);
 
 }

@@ -11,8 +11,6 @@ import de.diedavids.cuba.wizard.gui.components.AbstractWizardStep;
 import de.diedavids.cuba.wizard.gui.components.Wizard;
 import com.haulmont.cuba.web.gui.components.WebCssLayout;
 import de.diedavids.cuba.wizard.gui.components.WizardStep;
-import de.diedavids.cuba.wizard.gui.components.WizardStepAware;
-
 
 
 import java.util.*;
@@ -54,8 +52,6 @@ public class WebWizard extends WebCssLayout implements Wizard {
         com.vaadin.ui.Component unwrap = WebComponentsHelper.getComposition(layoutWrapper);
         component.addComponent(unwrap);
     }
-
-
 
 
     @Override
@@ -110,8 +106,6 @@ public class WebWizard extends WebCssLayout implements Wizard {
     public void removeWizardFinishClickListener(WizardFinishClickListener listener) {
         getEventHub().unsubscribe(WizardFinishClickEvent.class, listener);
     }
-
-
 
 
     protected void createLayout() {
@@ -233,7 +227,9 @@ public class WebWizard extends WebCssLayout implements Wizard {
         prevAction = new BaseAction(prevBtn.getId()) {
             @Override
             public void actionPerform(Component component) {
-                switchToTab(findPrevTab());
+                if (currentStep == null || currentStep.preClosePreviousClicked()) {
+                    switchToTab(findPrevTab());
+                }
             }
         };
         prevAction.addEnabledRule(this::currentTabIsNotFirstTab);
@@ -268,7 +264,9 @@ public class WebWizard extends WebCssLayout implements Wizard {
         nextAction = new BaseAction(nextBtn.getId()) {
             @Override
             public void actionPerform(Component component) {
-                switchToTab(findNextTab());
+                if (currentStep == null || currentStep.preCloseNextClicked()) {
+                    switchToTab(findNextTab());
+                }
             }
         };
 

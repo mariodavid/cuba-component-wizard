@@ -59,6 +59,26 @@ public class WebWizardStep extends WebVBoxLayout implements WizardStep {
     }
 
     @Override
+    public boolean preClosePreviousClicked() {
+        AbstractWizardStep wizardStep = getWizardStep();
+        if (wizardStep != null) {
+            return wizardStep.preClosePreviousClicked();
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean preCloseNextClicked() {
+        AbstractWizardStep wizardStep = getWizardStep();
+        if (wizardStep != null) {
+            return wizardStep.preCloseNextClicked();
+        } else {
+            return false;
+        }
+    }
+
+    @Override
     public void setWrapperComponent(TabSheet.Tab tabComponent) {
         this.tabComponent = tabComponent;
     }
