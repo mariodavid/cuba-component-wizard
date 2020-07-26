@@ -6,9 +6,10 @@ import com.haulmont.cuba.gui.components.ComponentContainer;
 import com.haulmont.cuba.web.app.main.MainScreen;
 import de.diedavids.cuba.wizard.DdcwWebTestContainer;
 import de.diedavids.cuba.wizard.gui.components.simple.SimpleWizard;
-import de.diedavids.cuba.wizard.web.screens.sample.cuba7.WizardNew;
+import de.diedavids.cuba.wizard.web.screens.sample.cuba7.WizardTestScreen;
 import de.diedavids.sneferu.environment.SneferuTestUiEnvironment;
 import de.diedavids.sneferu.screen.StandardScreenTestAPI;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
@@ -23,22 +24,42 @@ class WizardRenderingTest {
             )
             .withUserLogin("admin")
             .withMainScreen(MainScreen.class);
+    private StandardScreenTestAPI<WizardTestScreen> wizardScreen;
+    private SimpleWizard wizard;
+
+    @BeforeEach
+    void setUp() {
+
+        wizardScreen = environment
+            .getUiTestAPI().openStandardScreen(WizardTestScreen.class);
+
+        wizard = (SimpleWizard) wizardScreen.screen().getWindow().getComponent("wizard");
+
+    }
 
     @Test
     void when_screenIsLoaded_then_wizardComponentIsAvailable() {
 
-        final StandardScreenTestAPI<WizardNew> wizardScreen = environment
-            .getUiTestAPI().openStandardScreen(WizardNew.class);
-
-        final SimpleWizard wizard = (SimpleWizard) wizardScreen.screen().getWindow().getComponent("wizard");
-
         assertThat(wizard)
             .isNotNull();
 
-        final ComponentContainer helloTabContainer = (ComponentContainer) wizard.getTabComponent("step1Tab");
+        final ComponentContainer step1Tab = (ComponentContainer) wizard.getTabComponent("step1Tab");
 
-        assertThat(helloTabContainer.getComponent("checkBtn"))
+        assertThat(step1Tab.getComponent("checkBtn"))
             .isNotNull();
     }
+
+
+    @Test
+    void when_screenIsLoaded_then_firstTabIsOpened() {
+
+        assertThat(wizard.getSelectedTab())
+            .isEqualTo(wizard.getTab("step1Tab"));
+
+//        assertThat(wizard.getTab("step2Tab").isEnabled())
+//            .isFalse();
+    }
+
+
 
 }

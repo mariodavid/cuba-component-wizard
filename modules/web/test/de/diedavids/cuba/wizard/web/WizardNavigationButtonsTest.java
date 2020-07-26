@@ -6,7 +6,7 @@ import com.haulmont.cuba.gui.components.Button;
 import com.haulmont.cuba.web.app.main.MainScreen;
 import de.diedavids.cuba.wizard.DdcwWebTestContainer;
 import de.diedavids.cuba.wizard.gui.components.simple.SimpleWizard;
-import de.diedavids.cuba.wizard.web.screens.sample.cuba7.WizardNew;
+import de.diedavids.cuba.wizard.web.screens.sample.cuba7.WizardTestScreen;
 import de.diedavids.sneferu.environment.SneferuTestUiEnvironment;
 import de.diedavids.sneferu.screen.StandardScreenTestAPI;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,8 +29,8 @@ class WizardNavigationButtonsTest {
 
     @BeforeEach
     void setUp() {
-        final StandardScreenTestAPI<WizardNew> wizardScreen = environment
-            .getUiTestAPI().openStandardScreen(WizardNew.class);
+        final StandardScreenTestAPI<WizardTestScreen> wizardScreen = environment
+            .getUiTestAPI().openStandardScreen(WizardTestScreen.class);
 
         wizard = (SimpleWizard) wizardScreen.screen().getWindow().getComponent("wizard");
     }
@@ -64,6 +64,17 @@ class WizardNavigationButtonsTest {
             .isTrue();
     }
 
+
+    @Test
+    void when_nextStepIsPerformed_then_secondStepIsActive() {
+
+        // when:
+        wizard.nextStep();
+
+        assertThat(wizard.getSelectedTab())
+            .isEqualTo(wizard.getTab("step2Tab"));
+    }
+
     @Test
     void when_previousStepIsPerformed_then_wizardButtonStateChangesAccordingly() {
 
@@ -79,6 +90,19 @@ class WizardNavigationButtonsTest {
             .isFalse();
         assertThat(button(wizard, "finish").isEnabled())
             .isFalse();
+    }
+
+    @Test
+    void when_previousStepIsPerformed_then_firstStepIsActive() {
+
+        // given:
+        wizard.nextStep();
+
+        // when:
+        wizard.previousStep();
+
+        assertThat(wizard.getSelectedTab())
+            .isEqualTo(wizard.getTab("step1Tab"));
     }
 
     private Button button(SimpleWizard wizard, String buttonId) {

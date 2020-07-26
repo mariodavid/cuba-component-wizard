@@ -1,10 +1,12 @@
 package de.diedavids.cuba.wizard.gui.components.simple;
 
+import com.haulmont.bali.events.Subscription;
 import com.haulmont.cuba.gui.components.TabSheet;
 import de.diedavids.cuba.wizard.gui.components.Wizard;
 import de.diedavids.cuba.wizard.gui.components.Wizard.WizardStepChangeListener;
 import de.diedavids.cuba.wizard.gui.components.WizardStep;
 import java.util.EventObject;
+import java.util.function.Consumer;
 
 /**
  * Wizard component interface.
@@ -53,8 +55,11 @@ public interface SimpleWizard extends TabSheet {
     }
 
 
-    void addWizardCancelClickListener(WizardCancelClickListener listener);
-    void removeWizardCancelClickListener(WizardCancelClickListener listener);
+    /**
+     * Add a listener that will be notified when a selected tab is changed.
+     */
+    Subscription addWizardCancelClickListener(Consumer<WizardCancelClickEvent> listener);
+    void removeWizardCancelClickListener(Consumer<WizardCancelClickEvent> listener);
 
     class WizardCancelClickEvent extends EventObject {
         public WizardCancelClickEvent(SimpleWizard source) {
@@ -75,8 +80,8 @@ public interface SimpleWizard extends TabSheet {
 
 
 
-    void addWizardFinishClickListener(WizardFinishClickListener listener);
-    void removeWizardFinishClickListener(WizardFinishClickListener listener);
+    Subscription addWizardFinishClickListener(Consumer<WizardFinishClickEvent> listener);
+    void removeWizardFinishClickListener(Consumer<WizardFinishClickEvent> listener);
 
     class WizardFinishClickEvent extends EventObject {
         public WizardFinishClickEvent(SimpleWizard source) {

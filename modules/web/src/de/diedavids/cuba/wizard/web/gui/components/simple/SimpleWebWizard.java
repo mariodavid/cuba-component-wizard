@@ -1,5 +1,6 @@
 package de.diedavids.cuba.wizard.web.gui.components.simple;
 
+import com.haulmont.bali.events.Subscription;
 import com.haulmont.cuba.gui.components.Button;
 import com.haulmont.cuba.gui.components.ButtonsPanel;
 import com.haulmont.cuba.gui.components.Component;
@@ -7,11 +8,13 @@ import com.haulmont.cuba.gui.components.GroupBoxLayout;
 import com.haulmont.cuba.gui.components.TabSheet;
 import com.haulmont.cuba.gui.components.actions.BaseAction;
 import de.diedavids.cuba.wizard.gui.components.Wizard;
+import de.diedavids.cuba.wizard.gui.components.Wizard.WizardFinishClickEvent;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class SimpleWebWizard extends AbstractSimpleWebWizard {
 
@@ -299,27 +302,24 @@ public class SimpleWebWizard extends AbstractSimpleWebWizard {
         getEventHub().unsubscribe(WizardStepChangeEvent.class, listener);
     }
 
-
     @Override
-    public void addWizardCancelClickListener(WizardCancelClickListener listener) {
-        getEventHub().subscribe(WizardCancelClickEvent.class, listener);
-    }
-
-    @Override
-    public void removeWizardCancelClickListener(WizardCancelClickListener listener) {
+    public void removeWizardCancelClickListener(Consumer<WizardCancelClickEvent> listener) {
         getEventHub().unsubscribe(WizardCancelClickEvent.class, listener);
     }
 
-
     @Override
-    public void addWizardFinishClickListener(WizardFinishClickListener listener) {
-        getEventHub().subscribe(WizardFinishClickEvent.class, listener);
+    public Subscription addWizardCancelClickListener(Consumer<WizardCancelClickEvent> listener) {
+        return getEventHub().subscribe(WizardCancelClickEvent.class, listener);
     }
 
     @Override
-    public void removeWizardFinishClickListener(WizardFinishClickListener listener) {
+    public Subscription addWizardFinishClickListener(Consumer<WizardFinishClickEvent>  listener) {
+        return getEventHub().subscribe(WizardFinishClickEvent.class, listener);
+    }
+
+    @Override
+    public void removeWizardFinishClickListener(Consumer<WizardFinishClickEvent> listener) {
         getEventHub().unsubscribe(WizardFinishClickEvent.class, listener);
     }
-
 
 }

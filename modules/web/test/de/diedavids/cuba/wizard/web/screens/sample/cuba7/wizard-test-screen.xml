@@ -20,5 +20,6 @@
                 <button id="check2Btn" icon="font-icon:CHECK" />
             </tab>
         </wizard:simpleWizard>
+
     </layout>
 </window>
