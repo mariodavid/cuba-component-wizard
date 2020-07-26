@@ -20,10 +20,5 @@
                 <button id="check2Btn" icon="font-icon:CHECK" />
             </tab>
         </wizard:simpleWizard>
-
-        <tabSheet id="tabSheet">
-            <tab id="tab1" />
-            <tab id="tab2" />
-        </tabSheet>
     </layout>
 </window>
