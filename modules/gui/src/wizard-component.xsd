@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xs:schema xmlns="http://schemas.diedavids.de/wizard/0.2/wizard-component.xsd"
+           attributeFormDefault="unqualified"
+           elementFormDefault="qualified"
+           targetNamespace="http://schemas.diedavids.de/wizard/0.2/wizard-component.xsd"
+           xmlns:cuba="http://schemas.haulmont.com/cuba/screen/layout.xsd"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <xs:element name="simpleWizard">
+        <xs:complexType>
+            <xs:sequence minOccurs="1" maxOccurs="unbounded">
+                <xs:element name="simpleStep" type="simpleWizardStep" />
+            </xs:sequence>
+
+            <xs:attribute name="id" type="xs:string"/>
+            <xs:attribute name="height" type="xs:string"/>
+            <xs:attribute name="width" type="xs:string"/>
+            <xs:attribute name="caption" type="xs:string"/>
+
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="simpleWizardStep">
+        <xs:complexContent>
+            <xs:extension base="cuba:baseComponent">
+                <xs:group ref="cuba:layoutOrComponent"/>
+                <xs:attributeGroup ref="cuba:isLayoutComponent"/>
+
+                <xs:attributeGroup ref="cuba:hasSpacingMargin"/>
+                <xs:attributeGroup ref="cuba:hasContextHelp"/>
+
+                <xs:attribute name="stylename" type="cuba:boxLayoutStylename"/>
+                <xs:attribute name="expand" type="xs:string"/>
+                <xs:attribute name="requiredIndicatorVisible" type="xs:boolean"/>
+
+                <xs:attribute name="id" type="xs:string"/>
+                <xs:attribute name="icon" type="xs:string"/>
+                <xs:attribute name="caption" use="required" type="cuba:resourceString"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+</xs:schema>
