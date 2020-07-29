@@ -82,24 +82,6 @@ public abstract class AbstractSimpleWebWizard extends WebCssLayout
     }
 
     @Override
-    @Deprecated
-    public Tab getTab() {
-        return tabSheetLayout.getTab();
-    }
-
-    @Override
-    @Deprecated
-    public void setTab(Tab tab) {
-        tabSheetLayout.setTab(tab);
-    }
-
-    @Override
-    @Deprecated
-    public void setTab(String name) {
-        tabSheetLayout.setTab(name);
-    }
-
-    @Override
     public Tab getTab(String name) {
         return tabSheetLayout.getTab(name);
     }
@@ -205,6 +187,37 @@ public abstract class AbstractSimpleWebWizard extends WebCssLayout
     @Override
     public Collection<Component> getComponents() {
         return layoutWrapper.getComponents();
+    }
+
+
+    @Override
+    public Subscription addWizardStepChangeListener(Consumer<WizardStepChangeEvent> listener) {
+        return getEventHub().subscribe(WizardStepChangeEvent.class, listener);
+    }
+
+    @Override
+    public void removeWizardStepChangeListener(Consumer<WizardStepChangeEvent> listener) {
+        getEventHub().unsubscribe(WizardStepChangeEvent.class, listener);
+    }
+
+    @Override
+    public void removeWizardCancelClickListener(Consumer<WizardCancelClickEvent> listener) {
+        getEventHub().unsubscribe(WizardCancelClickEvent.class, listener);
+    }
+
+    @Override
+    public Subscription addWizardCancelClickListener(Consumer<WizardCancelClickEvent> listener) {
+        return getEventHub().subscribe(WizardCancelClickEvent.class, listener);
+    }
+
+    @Override
+    public Subscription addWizardFinishClickListener(Consumer<WizardFinishClickEvent>  listener) {
+        return getEventHub().subscribe(WizardFinishClickEvent.class, listener);
+    }
+
+    @Override
+    public void removeWizardFinishClickListener(Consumer<WizardFinishClickEvent> listener) {
+        getEventHub().unsubscribe(WizardFinishClickEvent.class, listener);
     }
 
 }

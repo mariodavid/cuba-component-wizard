@@ -73,6 +73,9 @@ class WizardNavigationButtonsTest {
 
         assertThat(wizard.getSelectedTab())
             .isEqualTo(wizard.getTab("step2Tab"));
+
+        assertThat(wizard.getTab("step1Tab").isEnabled())
+            .isFalse();
     }
 
     @Test
@@ -103,6 +106,9 @@ class WizardNavigationButtonsTest {
 
         assertThat(wizard.getSelectedTab())
             .isEqualTo(wizard.getTab("step1Tab"));
+
+        assertThat(wizard.getTab("step2Tab").isEnabled())
+            .isFalse();
     }
 
     private Button button(SimpleWizard wizard, String buttonId) {

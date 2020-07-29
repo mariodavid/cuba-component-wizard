@@ -1,12 +1,12 @@
 package de.diedavids.cuba.wizard.web.gui.components.simple;
 
-import com.haulmont.bali.events.Subscription;
 import com.haulmont.cuba.gui.components.Action;
 import com.haulmont.cuba.gui.components.Action.ActionPerformedEvent;
 import com.haulmont.cuba.gui.components.Button;
 import com.haulmont.cuba.gui.components.ButtonsPanel;
 import com.haulmont.cuba.gui.components.Component;
 import com.haulmont.cuba.gui.components.GroupBoxLayout;
+import com.haulmont.cuba.gui.components.ShortcutAction;
 import com.haulmont.cuba.gui.components.TabSheet;
 import com.haulmont.cuba.gui.components.actions.BaseAction;
 import de.diedavids.cuba.wizard.gui.components.Wizard;
@@ -22,8 +22,6 @@ public class SimpleWebWizard extends AbstractSimpleWebWizard {
 
 
     protected Map<Tab, TabSheet.Tab> steps = new LinkedHashMap<>();
-    protected Map<String, TabSheet.Tab> stepsById = new LinkedHashMap<>();
-    protected Map<String, Integer> tabIndexByName = new LinkedHashMap<>();
 
 
     protected List<Tab> tabList = new LinkedList<>();
@@ -44,7 +42,7 @@ public class SimpleWebWizard extends AbstractSimpleWebWizard {
             layoutWrapper.setWidthFull();
             layoutWrapper.setHeightFull();
 
-//            addWizardShortcutActions();
+            addWizardShortcutActions();
             tabSheetLayout = createTabSheetLayout();
 
             layoutWrapper.add(tabSheetLayout);
@@ -65,7 +63,6 @@ public class SimpleWebWizard extends AbstractSimpleWebWizard {
             setCurrentStep(event);
             disableAllOtherTabs(event.getSelectedTab());
             refreshWizardButtonPanel();
-
         });
 
         layoutWrapper.add(buttonsPanel);
@@ -73,13 +70,16 @@ public class SimpleWebWizard extends AbstractSimpleWebWizard {
         return layoutWrapper;
     }
 
+    private void addWizardShortcutActions() {
+        layoutWrapper.addShortcutAction(new ShortcutAction("CTRL-ALT-ARROW_RIGHT", shortcutTriggeredEvent -> nextAction.actionPerform(shortcutTriggeredEvent.getSource())));
+        layoutWrapper.addShortcutAction(new ShortcutAction("CTRL-ALT-ARROW_LEFT", shortcutTriggeredEvent -> prevAction.actionPerform(shortcutTriggeredEvent.getSource())));
+    }
+
     @Override
     public Tab addTab(String name, Component component) {
         final Tab tab = super.addTab(name, component);
 
         tabList.add(tab);
-
-
         disableAllOtherTabs(currentTab);
 
         return tab;
@@ -98,14 +98,6 @@ public class SimpleWebWizard extends AbstractSimpleWebWizard {
     private void setCurrentStep(TabSheet.SelectedTabChangeEvent event) {
         currentTab = event.getSelectedTab();
         currentStep = steps.get(currentTab);
-        activateStep(currentStep);
-    }
-
-    private void activateStep(Tab wizardStep) {
-        if (wizardStep != null) {
-            currentStep = wizardStep;
-//            wizardStep.onActivate();
-        }
     }
 
     private void refreshWizardButtonPanel() {
@@ -155,8 +147,7 @@ public class SimpleWebWizard extends AbstractSimpleWebWizard {
     }
 
     private void handleCancelClick(ActionPerformedEvent actionPerformedEvent) {
-        WizardCancelClickEvent event = new WizardCancelClickEvent(this);
-        getEventHub().publish(WizardCancelClickEvent.class, event);
+        getEventHub().publish(WizardCancelClickEvent.class, new WizardCancelClickEvent(this));
     }
 
     private BaseAction wizardAction(Button button, Consumer<Action.ActionPerformedEvent> handler) {
@@ -167,13 +158,9 @@ public class SimpleWebWizard extends AbstractSimpleWebWizard {
     private Button createPrevBtn() {
         Button prevBtn = createWizardControlBtn("prev");
 
-        prevAction = new BaseAction(prevBtn.getId()) {
-            @Override
-            public void actionPerform(Component component) {
-                switchToTab(findPrevTab());
-            }
-        };
-        prevAction.addEnabledRule(this::currentTabIsNotFirstTab);
+        prevAction = wizardAction(prevBtn, e -> switchToTab(findPrevTab()));
+        prevAction.addEnabledRule(() -> !currentTabIsFirstTab());
+
         prevBtn.setAction(prevAction);
         return prevBtn;
     }
@@ -195,16 +182,9 @@ public class SimpleWebWizard extends AbstractSimpleWebWizard {
         }
     }
 
-    private boolean currentTabIsNotFirstTab() {
-        return !currentTabIsFirstTab();
-    }
-
     private Button createNextBtn() {
         Button nextBtn = createWizardControlBtn("next");
-
-        nextAction = new BaseAction(nextBtn.getId())
-            .withHandler(actionPerformedEvent -> nextStep());
-
+        nextAction = wizardAction(nextBtn, actionPerformedEvent -> nextStep());
         nextAction.addEnabledRule(() -> !currentTabIsLastTab());
         nextBtn.setAction(nextAction);
         return nextBtn;
@@ -212,19 +192,13 @@ public class SimpleWebWizard extends AbstractSimpleWebWizard {
 
     private Button createFinishBtn() {
         Button finishBtn = createWizardControlBtn("finish");
-        finishAction = new BaseAction(finishBtn.getId()) {
-            @Override
-            public void actionPerform(Component component) {
-                handleFinishClick();
-            }
-        };
-
+        finishAction = wizardAction(finishBtn, this::handleFinishClick);
         finishAction.addEnabledRule(this::currentTabIsLastTab);
         finishBtn.setAction(finishAction);
         return finishBtn;
     }
 
-    private void handleFinishClick() {
+    private void handleFinishClick(ActionPerformedEvent actionPerformedEvent) {
         WizardFinishClickEvent finishClickEvent = new WizardFinishClickEvent(this);
         publish(WizardFinishClickEvent.class, finishClickEvent);
     }
@@ -294,36 +268,5 @@ public class SimpleWebWizard extends AbstractSimpleWebWizard {
         switchToTab(findPrevTab());
     }
 
-
-
-    @Override
-    public void addWizardStepChangeListener(WizardStepChangeListener listener) {
-        getEventHub().subscribe(WizardStepChangeEvent.class, listener);
-    }
-
-    @Override
-    public void removeWizardStepChangeListener(WizardStepChangeListener listener) {
-        getEventHub().unsubscribe(WizardStepChangeEvent.class, listener);
-    }
-
-    @Override
-    public void removeWizardCancelClickListener(Consumer<WizardCancelClickEvent> listener) {
-        getEventHub().unsubscribe(WizardCancelClickEvent.class, listener);
-    }
-
-    @Override
-    public Subscription addWizardCancelClickListener(Consumer<WizardCancelClickEvent> listener) {
-        return getEventHub().subscribe(WizardCancelClickEvent.class, listener);
-    }
-
-    @Override
-    public Subscription addWizardFinishClickListener(Consumer<WizardFinishClickEvent>  listener) {
-        return getEventHub().subscribe(WizardFinishClickEvent.class, listener);
-    }
-
-    @Override
-    public void removeWizardFinishClickListener(Consumer<WizardFinishClickEvent> listener) {
-        getEventHub().unsubscribe(WizardFinishClickEvent.class, listener);
-    }
 
 }
