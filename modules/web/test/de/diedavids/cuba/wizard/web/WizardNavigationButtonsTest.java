@@ -38,9 +38,11 @@ class WizardNavigationButtonsTest {
     @Test
     void when_screenIsLoaded_then_wizardButtonPanelsAreAvailable() {
 
+        // when:
         assertThat(wizard)
             .isNotNull();
 
+        // then:
         assertThat(button(wizard, "next").isEnabled())
             .isTrue();
         assertThat(button(wizard, "prev").isEnabled())
@@ -56,6 +58,7 @@ class WizardNavigationButtonsTest {
         // when:
         wizard.nextStep();
 
+        // then:
         assertThat(button(wizard, "next").isEnabled())
             .isFalse();
         assertThat(button(wizard, "prev").isEnabled())
@@ -71,6 +74,7 @@ class WizardNavigationButtonsTest {
         // when:
         wizard.nextStep();
 
+        // then:
         assertThat(wizard.getSelectedTab())
             .isEqualTo(wizard.getTab("step2Tab"));
 
@@ -87,6 +91,7 @@ class WizardNavigationButtonsTest {
         // when:
         wizard.previousStep();
 
+        // then:
         assertThat(button(wizard, "next").isEnabled())
             .isTrue();
         assertThat(button(wizard, "prev").isEnabled())
@@ -104,6 +109,7 @@ class WizardNavigationButtonsTest {
         // when:
         wizard.previousStep();
 
+        // then:
         assertThat(wizard.getSelectedTab())
             .isEqualTo(wizard.getTab("step1Tab"));
 

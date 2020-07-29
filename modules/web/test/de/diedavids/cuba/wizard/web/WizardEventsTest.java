@@ -44,6 +44,7 @@ class WizardEventsTest {
     @Test
     void when_cancelIsPerformed_then_cancelEventHasBeenReceived() {
 
+        // given:
         final Button cancelBtn = wizardBtn("cancel");
 
         // when:
@@ -57,6 +58,7 @@ class WizardEventsTest {
     @Test
     void when_nextStepIsPerformed_then_tabChangedEventHasBeenReceived() {
 
+        // given:
         final Button nextBtn = wizardBtn("next");
 
         // when:
