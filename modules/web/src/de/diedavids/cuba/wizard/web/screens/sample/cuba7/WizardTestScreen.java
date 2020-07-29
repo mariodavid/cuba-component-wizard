@@ -1,6 +1,5 @@
 package de.diedavids.cuba.wizard.web.screens.sample.cuba7;
 
-import com.haulmont.cuba.gui.Notifications;
 import com.haulmont.cuba.gui.components.TabSheet.SelectedTabChangeEvent;
 import com.haulmont.cuba.gui.screen.Screen;
 import com.haulmont.cuba.gui.screen.Subscribe;
@@ -9,6 +8,8 @@ import com.haulmont.cuba.gui.screen.UiDescriptor;
 import de.diedavids.cuba.wizard.gui.components.simple.SimpleWizard;
 import de.diedavids.cuba.wizard.gui.components.simple.SimpleWizard.WizardCancelClickEvent;
 import de.diedavids.cuba.wizard.gui.components.simple.SimpleWizard.WizardFinishClickEvent;
+import de.diedavids.cuba.wizard.gui.components.simple.SimpleWizard.WizardStepChangeEvent;
+import de.diedavids.cuba.wizard.gui.components.simple.SimpleWizard.WizardStepPreChangeEvent;
 import java.util.EventObject;
 import java.util.HashMap;
 import javax.inject.Inject;
@@ -16,9 +17,6 @@ import javax.inject.Inject;
 @UiController("ddcw_WizardNew")
 @UiDescriptor("wizard-test-screen.xml")
 public class WizardTestScreen extends Screen {
-
-    @Inject
-    protected Notifications notifications;
 
     @Inject
     protected SimpleWizard wizard;
@@ -35,6 +33,15 @@ public class WizardTestScreen extends Screen {
         events.put(WizardCancelClickEvent.class, event);
     }
 
+    @Subscribe("wizard")
+    protected void onWizardStepPreChangeEvent(WizardStepPreChangeEvent event) {
+        events.put(WizardStepPreChangeEvent.class, event);
+    }
+
+    @Subscribe("wizard")
+    protected void onWizardStepChangeEvent(WizardStepChangeEvent event) {
+        events.put(WizardStepChangeEvent.class, event);
+    }
 
     @Subscribe("wizard")
     protected void onFinishWizardClick(WizardFinishClickEvent event) {
@@ -44,7 +51,5 @@ public class WizardTestScreen extends Screen {
     public <T extends EventObject> T receivedEvent(Class<T> clazz) {
         return (T) events.get(clazz);
     }
-
-
 
 }

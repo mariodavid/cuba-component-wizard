@@ -201,6 +201,16 @@ public abstract class AbstractSimpleWebWizard extends WebCssLayout
     }
 
     @Override
+    public Subscription addWizardStepPreChangeListener(Consumer<WizardStepPreChangeEvent> listener) {
+        return getEventHub().subscribe(WizardStepPreChangeEvent.class, listener);
+    }
+
+    @Override
+    public void removeWizardStepPreChangeListener(Consumer<WizardStepPreChangeEvent> listener) {
+        getEventHub().unsubscribe(WizardStepPreChangeEvent.class, listener);
+    }
+
+    @Override
     public void removeWizardCancelClickListener(Consumer<WizardCancelClickEvent> listener) {
         getEventHub().unsubscribe(WizardCancelClickEvent.class, listener);
     }

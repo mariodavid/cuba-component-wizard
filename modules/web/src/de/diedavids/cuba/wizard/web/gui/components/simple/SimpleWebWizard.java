@@ -166,18 +166,17 @@ public class SimpleWebWizard extends AbstractSimpleWebWizard {
     }
 
     private void switchToTab(TabSheet.Tab destination) {
-        if (destination != null && isStepChangedAllowed()) {
+
+        WizardStepPreChangeEvent stepPreChangeEvent = new WizardStepPreChangeEvent(this, currentTab, destination);
+        getEventHub().publish(WizardStepPreChangeEvent.class, stepPreChangeEvent);
+
+        if (!stepPreChangeEvent.isCommitPrevented()) {
+
             enableTab(destination);
 
-            TabSheet.Tab prevStep = currentStep;
-//            WizardStep step = getStep(destination.getName());
-
-
             tabSheetLayout.setSelectedTab(destination);
-
-
-//            WizardStepChangeEvent wizardStepChangeEvent = new WizardStepChangeEvent(this, prevStep, step);
-//            getEventHub().publish(WizardStepChangeEvent.class, wizardStepChangeEvent);
+            WizardStepChangeEvent wizardStepChangeEvent = new WizardStepChangeEvent(this, currentTab, destination);
+            getEventHub().publish(WizardStepChangeEvent.class, wizardStepChangeEvent);
 
         }
     }

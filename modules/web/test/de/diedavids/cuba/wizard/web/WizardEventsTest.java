@@ -2,13 +2,14 @@ package de.diedavids.cuba.wizard.web;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.haulmont.cuba.gui.components.TabSheet.SelectedTabChangeEvent;
 import com.haulmont.cuba.web.app.main.MainScreen;
 import com.vaadin.ui.Button;
 import de.diedavids.cuba.wizard.DdcwWebTestContainer;
 import de.diedavids.cuba.wizard.gui.components.simple.SimpleWizard;
 import de.diedavids.cuba.wizard.gui.components.simple.SimpleWizard.WizardCancelClickEvent;
 import de.diedavids.cuba.wizard.gui.components.simple.SimpleWizard.WizardFinishClickEvent;
+import de.diedavids.cuba.wizard.gui.components.simple.SimpleWizard.WizardStepChangeEvent;
+import de.diedavids.cuba.wizard.gui.components.simple.SimpleWizard.WizardStepPreChangeEvent;
 import de.diedavids.cuba.wizard.web.screens.sample.cuba7.WizardTestScreen;
 import de.diedavids.sneferu.environment.SneferuTestUiEnvironment;
 import de.diedavids.sneferu.screen.StandardScreenTestAPI;
@@ -56,7 +57,7 @@ class WizardEventsTest {
     }
 
     @Test
-    void when_nextStepIsPerformed_then_tabChangedEventHasBeenReceived() {
+    void when_nextStepIsPerformed_then_stepChangedEventsAreReceived() {
 
         // given:
         final Button nextBtn = wizardBtn("next");
@@ -65,8 +66,41 @@ class WizardEventsTest {
         nextBtn.click();
 
         // then:
-        assertThat(event(SelectedTabChangeEvent.class))
+        assertThat(event(WizardStepPreChangeEvent.class))
             .isNotNull();
+
+        assertThat(event(WizardStepChangeEvent.class))
+            .isNotNull();
+    }
+
+    @Test
+    void when_nextStepIsPerformed_then_stepChangedEventHasBeenReceived() {
+
+        // given:
+        final Button nextBtn = wizardBtn("next");
+
+        // when:
+        nextBtn.click();
+
+        // then:
+        assertThat(event(WizardStepChangeEvent.class))
+            .isNotNull();
+    }
+
+    @Test
+    void when_nextStepIsPermitted_then_stepChangedEventHasNotBeenReceived() {
+
+        // given:
+        final Button nextBtn = wizardBtn("next");
+
+        wizard.addWizardStepPreChangeListener(event -> event.preventStepChange());
+
+        // when:
+        nextBtn.click();
+
+        // then:
+        assertThat(event(WizardStepChangeEvent.class))
+            .isNull();
     }
 
     @Test
@@ -85,6 +119,7 @@ class WizardEventsTest {
         assertThat(event(WizardFinishClickEvent.class))
             .isNotNull();
     }
+
 
     private <T extends EventObject> T event(Class<T> clazz) {
         return wizardTestScreen.screen().receivedEvent(clazz);

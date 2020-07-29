@@ -22,12 +22,17 @@ public interface SimpleWizard extends TabSheet {
     void removeWizardStepChangeListener(Consumer<WizardStepChangeEvent> listener);
 
 
+
+    Subscription addWizardStepPreChangeListener(Consumer<WizardStepPreChangeEvent> listener);
+    void removeWizardStepPreChangeListener(Consumer<WizardStepPreChangeEvent> listener);
+
+
     class WizardStepChangeEvent extends EventObject {
 
-        WizardStep prevStep;
-        WizardStep step;
+        TabSheet.Tab prevStep;
+        TabSheet.Tab step;
 
-        public WizardStepChangeEvent(SimpleWizard source, WizardStep prevStep, WizardStep step) {
+        public WizardStepChangeEvent(SimpleWizard source, TabSheet.Tab prevStep, TabSheet.Tab step) {
             super(source);
             this.prevStep = prevStep;
             this.step = step;
@@ -38,12 +43,54 @@ public interface SimpleWizard extends TabSheet {
             return (SimpleWizard) super.getSource();
         }
 
-        public WizardStep getPrevStep() {
+        public TabSheet.Tab getPrevStep() {
             return prevStep;
         }
 
-        public WizardStep getStep() {
+        public TabSheet.Tab getStep() {
             return step;
+        }
+    }
+
+    class WizardStepPreChangeEvent extends EventObject {
+
+        TabSheet.Tab prevStep;
+        TabSheet.Tab step;
+
+        private boolean commitPrevented = false;
+
+        public WizardStepPreChangeEvent(SimpleWizard source, TabSheet.Tab prevStep, TabSheet.Tab step) {
+            super(source);
+            this.prevStep = prevStep;
+            this.step = step;
+        }
+
+        @Override
+        public SimpleWizard getSource() {
+            return (SimpleWizard) super.getSource();
+        }
+
+        public TabSheet.Tab getPrevStep() {
+            return prevStep;
+        }
+
+        public TabSheet.Tab getStep() {
+            return step;
+        }
+
+
+        /**
+         * Invoke this method if you want to abort the commit.
+         */
+        public void preventStepChange() {
+            commitPrevented = true;
+        }
+
+        /**
+         * Returns true if {@link #preventStepChange()} method was called and commit will be aborted.
+         */
+        public boolean isCommitPrevented() {
+            return commitPrevented;
         }
     }
 
