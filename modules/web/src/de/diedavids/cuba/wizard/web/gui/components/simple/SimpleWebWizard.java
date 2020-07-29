@@ -1,6 +1,8 @@
 package de.diedavids.cuba.wizard.web.gui.components.simple;
 
 import com.haulmont.bali.events.Subscription;
+import com.haulmont.cuba.gui.components.Action;
+import com.haulmont.cuba.gui.components.Action.ActionPerformedEvent;
 import com.haulmont.cuba.gui.components.Button;
 import com.haulmont.cuba.gui.components.ButtonsPanel;
 import com.haulmont.cuba.gui.components.Component;
@@ -8,7 +10,6 @@ import com.haulmont.cuba.gui.components.GroupBoxLayout;
 import com.haulmont.cuba.gui.components.TabSheet;
 import com.haulmont.cuba.gui.components.actions.BaseAction;
 import de.diedavids.cuba.wizard.gui.components.Wizard;
-import de.diedavids.cuba.wizard.gui.components.Wizard.WizardFinishClickEvent;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -55,7 +56,7 @@ public class SimpleWebWizard extends AbstractSimpleWebWizard {
             }
         }
 
-        layoutWrapper.requestFocus();
+        layoutWrapper.focusFirstComponent();
         ButtonsPanel buttonsPanel = createWizardButtonPanel();
 
         tabSheetLayout.setStyleName("centered-tabs equal-width-tabs icons-on-top");
@@ -77,6 +78,10 @@ public class SimpleWebWizard extends AbstractSimpleWebWizard {
         final Tab tab = super.addTab(name, component);
 
         tabList.add(tab);
+
+
+        disableAllOtherTabs(currentTab);
+
         return tab;
     }
 
@@ -144,20 +149,19 @@ public class SimpleWebWizard extends AbstractSimpleWebWizard {
     private Button createCancelBtn() {
         Button cancelBtn = createWizardControlBtn("cancel");
         cancelBtn.setTabIndex(-1);
-        cancelAction = new BaseAction(cancelBtn.getId()) {
-            @Override
-            public void actionPerform(Component component) {
-                handleCancelClick();
-            }
-        };
-
+        cancelAction = wizardAction(cancelBtn, this::handleCancelClick);
         cancelBtn.setAction(cancelAction);
         return cancelBtn;
     }
 
-    private void handleCancelClick() {
+    private void handleCancelClick(ActionPerformedEvent actionPerformedEvent) {
         WizardCancelClickEvent event = new WizardCancelClickEvent(this);
         getEventHub().publish(WizardCancelClickEvent.class, event);
+    }
+
+    private BaseAction wizardAction(Button button, Consumer<Action.ActionPerformedEvent> handler) {
+        return new BaseAction(button.getId())
+            .withHandler(handler);
     }
 
     private Button createPrevBtn() {

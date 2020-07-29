@@ -51,13 +51,20 @@ class WizardRenderingTest {
 
 
     @Test
-    void when_screenIsLoaded_then_firstTabIsOpened() {
+    void when_screenIsLoaded_then_firstTabIsActive() {
 
         assertThat(wizard.getSelectedTab())
             .isEqualTo(wizard.getTab("step1Tab"));
+    }
 
-//        assertThat(wizard.getTab("step2Tab").isEnabled())
-//            .isFalse();
+    @Test
+    void when_screenIsLoaded_then_onlyTheFirstTabIsEnabled() {
+
+        assertThat(wizard.getTab("step1Tab").isEnabled())
+            .isTrue();
+
+        assertThat(wizard.getTab("step2Tab").isEnabled())
+            .isFalse();
     }
 
 

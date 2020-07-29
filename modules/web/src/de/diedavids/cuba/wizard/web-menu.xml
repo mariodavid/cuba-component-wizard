@@ -1,3 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <menu-config xmlns="http://schemas.haulmont.com/cuba/menu.xsd">
+
+  <menu id="wizard-application" caption="Examples">
+    <item id="ddcw_WizardNew" caption="Wizard New" />
+  </menu>
 </menu-config>

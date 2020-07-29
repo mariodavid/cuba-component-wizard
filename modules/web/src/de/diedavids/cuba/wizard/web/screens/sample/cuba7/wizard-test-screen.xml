@@ -9,6 +9,8 @@
               id="step1Tab"
               caption="msg://step1"
               icon="font-icon:ADN"
+              spacing="true"
+              margin="true"
             >
                 <button id="checkBtn" icon="font-icon:CHECK" />
             </tab>
