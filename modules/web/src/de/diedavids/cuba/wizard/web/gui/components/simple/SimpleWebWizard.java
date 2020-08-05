@@ -1,41 +1,45 @@
 package de.diedavids.cuba.wizard.web.gui.components.simple;
 
-import com.haulmont.cuba.gui.components.Action;
 import com.haulmont.cuba.gui.components.Action.ActionPerformedEvent;
-import com.haulmont.cuba.gui.components.Button;
 import com.haulmont.cuba.gui.components.ButtonsPanel;
 import com.haulmont.cuba.gui.components.Component;
 import com.haulmont.cuba.gui.components.GroupBoxLayout;
 import com.haulmont.cuba.gui.components.ShortcutAction;
 import com.haulmont.cuba.gui.components.TabSheet;
-import com.haulmont.cuba.gui.components.actions.BaseAction;
 import de.diedavids.cuba.wizard.gui.components.Wizard;
+import de.diedavids.cuba.wizard.web.gui.components.simple.WizardButtonsPanel.WizardButtonType;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 public class SimpleWebWizard extends AbstractSimpleWebWizard {
 
 
-
     protected Map<Tab, TabSheet.Tab> steps = new LinkedHashMap<>();
 
-
     protected List<Tab> tabList = new LinkedList<>();
+
 
     protected Wizard wizard;
     protected TabSheet.Tab currentStep;
     protected TabSheet.Tab currentTab;
-    private BaseAction cancelAction;
-    private BaseAction nextAction;
-    private BaseAction prevAction;
-    private BaseAction finishAction;
+//    private BaseAction cancelAction;
+//    private BaseAction nextAction;
+//    private BaseAction prevAction;
+//    private BaseAction finishAction;
+    private WizardButtonsPanel buttonsPanel;
 
     @Override
     protected GroupBoxLayout createLayout() {
+
+        buttonsPanel = new WizardButtonsPanel(
+            uiComponents,
+            messages
+        );
+
         if (tabSheetLayout == null) {
             layoutWrapper = uiComponents.create(GroupBoxLayout.class);
 
@@ -71,8 +75,10 @@ public class SimpleWebWizard extends AbstractSimpleWebWizard {
     }
 
     private void addWizardShortcutActions() {
-        layoutWrapper.addShortcutAction(new ShortcutAction("CTRL-ALT-ARROW_RIGHT", shortcutTriggeredEvent -> nextAction.actionPerform(shortcutTriggeredEvent.getSource())));
-        layoutWrapper.addShortcutAction(new ShortcutAction("CTRL-ALT-ARROW_LEFT", shortcutTriggeredEvent -> prevAction.actionPerform(shortcutTriggeredEvent.getSource())));
+        layoutWrapper.addShortcutAction(new ShortcutAction("CTRL-ALT-ARROW_RIGHT",
+            shortcutTriggeredEvent -> nextStep()));
+        layoutWrapper.addShortcutAction(new ShortcutAction("CTRL-ALT-ARROW_LEFT",
+            shortcutTriggeredEvent -> previousStep()));
     }
 
     @Override
@@ -91,19 +97,13 @@ public class SimpleWebWizard extends AbstractSimpleWebWizard {
         return tabSheetLayout;
     }
 
-    private boolean isStepChangedAllowed() {
-        return currentStep == null; // || currentStep.preClose();
-    }
-
     private void setCurrentStep(TabSheet.SelectedTabChangeEvent event) {
         currentTab = event.getSelectedTab();
         currentStep = steps.get(currentTab);
     }
 
     private void refreshWizardButtonPanel() {
-        nextAction.refreshState();
-        prevAction.refreshState();
-        finishAction.refreshState();
+        buttonsPanel.refresh();
     }
 
     private void disableAllOtherTabs(TabSheet.Tab exludingTab) {
@@ -127,49 +127,43 @@ public class SimpleWebWizard extends AbstractSimpleWebWizard {
 
     private ButtonsPanel createWizardButtonPanel() {
 
-        ButtonsPanel wizardButtonsPanel = uiComponents.create(ButtonsPanel.class);
-        wizardButtonsPanel.setAlignment(Component.Alignment.TOP_RIGHT);
-
-        wizardButtonsPanel.add(createCancelBtn());
-        wizardButtonsPanel.add(createPrevBtn());
-        wizardButtonsPanel.add(createNextBtn());
-        wizardButtonsPanel.add(createFinishBtn());
-
-        return wizardButtonsPanel;
-    }
-
-    private Button createCancelBtn() {
-        Button cancelBtn = createWizardControlBtn("cancel");
-        cancelBtn.setTabIndex(-1);
-        cancelAction = wizardAction(cancelBtn, this::handleCancelClick);
-        cancelBtn.setAction(cancelAction);
-        return cancelBtn;
+       return buttonsPanel.createWizardButtonPanel(
+            Arrays.asList(
+                WizardButtonsPanel.button(
+                    WizardButtonType.CANCEL,
+                    this::handleCancelClick,
+                    () -> true
+                ),
+                WizardButtonsPanel.button(
+                    WizardButtonType.PREVIOUS,
+                    e -> previousStep(),
+                    () -> !currentTabIsFirstTab()
+                ),
+                WizardButtonsPanel.button(
+                    WizardButtonType.NEXT,
+                    e -> nextStep(),
+                    () -> !currentTabIsLastTab()
+                ),
+                WizardButtonsPanel.button(
+                    WizardButtonType.FINISH,
+                    this::handleFinishClick,
+                    this::currentTabIsLastTab
+                )
+            )
+        );
     }
 
     private void handleCancelClick(ActionPerformedEvent actionPerformedEvent) {
         getEventHub().publish(WizardCancelClickEvent.class, new WizardCancelClickEvent(this));
     }
 
-    private BaseAction wizardAction(Button button, Consumer<Action.ActionPerformedEvent> handler) {
-        return new BaseAction(button.getId())
-            .withHandler(handler);
-    }
-
-    private Button createPrevBtn() {
-        Button prevBtn = createWizardControlBtn("prev");
-
-        prevAction = wizardAction(prevBtn, e -> previousStep());
-        prevAction.addEnabledRule(() -> !currentTabIsFirstTab());
-
-        prevBtn.setAction(prevAction);
-        return prevBtn;
-    }
-
-    private void switchToTab(Tab destination,
+    private void switchToTab(
+        Tab destination,
         Direction direction
     ) {
 
-        WizardStepPreChangeEvent stepPreChangeEvent = new WizardStepPreChangeEvent(this, currentTab, destination, direction);
+        WizardStepPreChangeEvent stepPreChangeEvent = new WizardStepPreChangeEvent(this, currentTab,
+            destination, direction);
         getEventHub().publish(WizardStepPreChangeEvent.class, stepPreChangeEvent);
 
         if (!stepPreChangeEvent.isStepChangePrevented()) {
@@ -177,26 +171,11 @@ public class SimpleWebWizard extends AbstractSimpleWebWizard {
             enableTab(destination);
 
             tabSheetLayout.setSelectedTab(destination);
-            WizardStepChangeEvent wizardStepChangeEvent = new WizardStepChangeEvent(this, currentTab, destination, direction);
+            WizardStepChangeEvent wizardStepChangeEvent = new WizardStepChangeEvent(this,
+                currentTab, destination, direction);
             getEventHub().publish(WizardStepChangeEvent.class, wizardStepChangeEvent);
 
         }
-    }
-
-    private Button createNextBtn() {
-        Button nextBtn = createWizardControlBtn("next");
-        nextAction = wizardAction(nextBtn, actionPerformedEvent -> nextStep());
-        nextAction.addEnabledRule(() -> !currentTabIsLastTab());
-        nextBtn.setAction(nextAction);
-        return nextBtn;
-    }
-
-    private Button createFinishBtn() {
-        Button finishBtn = createWizardControlBtn("finish");
-        finishAction = wizardAction(finishBtn, this::handleFinishClick);
-        finishAction.addEnabledRule(this::currentTabIsLastTab);
-        finishBtn.setAction(finishAction);
-        return finishBtn;
     }
 
     private void handleFinishClick(ActionPerformedEvent actionPerformedEvent) {
@@ -251,19 +230,11 @@ public class SimpleWebWizard extends AbstractSimpleWebWizard {
         return result;
     }
 
-
-    private Button createWizardControlBtn(String id) {
-        Button btn = uiComponents.create(Button.class);
-        btn.setId(id);
-        btn.setCaption(messages.getMessage(this.getClass(), id + "BtnCaption"));
-        btn.setIcon(messages.getMessage(this.getClass(), id + "BtnIcon"));
-        return btn;
-    }
-
     @Override
     public void nextStep() {
         switchToTab(findNextTab(), Direction.NEXT);
     }
+
     @Override
     public void previousStep() {
         switchToTab(findPrevTab(), Direction.PREVIOUS);
