@@ -16,6 +16,11 @@ public interface SimpleWizard extends TabSheet {
 
     void previousStep();
 
+    enum Direction {
+        NEXT,
+        PREVIOUS
+    }
+
 
     /**
      * Add a listener that will be notified when a step change happened
@@ -34,11 +39,17 @@ public interface SimpleWizard extends TabSheet {
 
         TabSheet.Tab prevStep;
         TabSheet.Tab step;
+        Direction direction;
 
-        public WizardStepChangeEvent(SimpleWizard source, TabSheet.Tab prevStep, TabSheet.Tab step) {
+        public WizardStepChangeEvent(SimpleWizard source, TabSheet.Tab prevStep, TabSheet.Tab step, Direction direction) {
             super(source);
             this.prevStep = prevStep;
             this.step = step;
+            this.direction = direction;
+        }
+
+        public Direction getDirection() {
+            return direction;
         }
 
         @Override
@@ -60,14 +71,20 @@ public interface SimpleWizard extends TabSheet {
         TabSheet.Tab prevStep;
         TabSheet.Tab step;
 
-        private boolean commitPrevented = false;
+        Direction direction;
 
-        public WizardStepPreChangeEvent(SimpleWizard source, TabSheet.Tab prevStep, TabSheet.Tab step) {
+        private boolean stepChangePrevented = false;
+
+        public WizardStepPreChangeEvent(SimpleWizard source, TabSheet.Tab prevStep, TabSheet.Tab step, Direction direction) {
             super(source);
             this.prevStep = prevStep;
             this.step = step;
+            this.direction = direction;
         }
 
+        public Direction getDirection() {
+            return direction;
+        }
         @Override
         public SimpleWizard getSource() {
             return (SimpleWizard) super.getSource();
@@ -86,14 +103,14 @@ public interface SimpleWizard extends TabSheet {
          * Invoke this method if you want to abort the commit.
          */
         public void preventStepChange() {
-            commitPrevented = true;
+            stepChangePrevented = true;
         }
 
         /**
          * Returns true if {@link #preventStepChange()} method was called and commit will be aborted.
          */
-        public boolean isCommitPrevented() {
-            return commitPrevented;
+        public boolean isStepChangePrevented() {
+            return stepChangePrevented;
         }
     }
 

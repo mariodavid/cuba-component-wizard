@@ -6,6 +6,7 @@ import com.haulmont.cuba.web.app.main.MainScreen;
 import com.vaadin.ui.Button;
 import de.diedavids.cuba.wizard.DdcwWebTestContainer;
 import de.diedavids.cuba.wizard.gui.components.simple.SimpleWizard;
+import de.diedavids.cuba.wizard.gui.components.simple.SimpleWizard.Direction;
 import de.diedavids.cuba.wizard.gui.components.simple.SimpleWizard.WizardCancelClickEvent;
 import de.diedavids.cuba.wizard.gui.components.simple.SimpleWizard.WizardFinishClickEvent;
 import de.diedavids.cuba.wizard.gui.components.simple.SimpleWizard.WizardStepChangeEvent;
@@ -66,12 +67,50 @@ class WizardEventsTest {
         nextBtn.click();
 
         // then:
+
         assertThat(event(WizardStepPreChangeEvent.class))
             .isNotNull();
 
         assertThat(event(WizardStepChangeEvent.class))
             .isNotNull();
     }
+
+
+    @Test
+    void when_nextStepIsPerformed_then_eventsContainCorrectDirection() {
+
+        // given:
+        final Button nextBtn = wizardBtn("next");
+
+        // when:
+        nextBtn.click();
+
+        // then:
+        assertThat(event(WizardStepPreChangeEvent.class).getDirection())
+            .isEqualTo(Direction.NEXT);
+
+        assertThat(event(WizardStepChangeEvent.class).getDirection())
+            .isEqualTo(Direction.NEXT);
+    }
+
+
+    @Test
+    void when_prevStepIsPerformed_then_eventsContainCorrectDirection() {
+
+        // given:
+        wizardBtn("next").click();
+
+        // when:
+        wizardBtn("prev").click();
+
+        // then:
+        assertThat(event(WizardStepPreChangeEvent.class).getDirection())
+            .isEqualTo(Direction.PREVIOUS);
+
+        assertThat(event(WizardStepChangeEvent.class).getDirection())
+            .isEqualTo(Direction.PREVIOUS);
+    }
+
 
     @Test
     void when_nextStepIsPerformed_then_stepChangedEventHasBeenReceived() {

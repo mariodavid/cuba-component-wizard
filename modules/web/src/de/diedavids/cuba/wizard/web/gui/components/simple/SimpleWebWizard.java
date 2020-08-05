@@ -158,24 +158,26 @@ public class SimpleWebWizard extends AbstractSimpleWebWizard {
     private Button createPrevBtn() {
         Button prevBtn = createWizardControlBtn("prev");
 
-        prevAction = wizardAction(prevBtn, e -> switchToTab(findPrevTab()));
+        prevAction = wizardAction(prevBtn, e -> previousStep());
         prevAction.addEnabledRule(() -> !currentTabIsFirstTab());
 
         prevBtn.setAction(prevAction);
         return prevBtn;
     }
 
-    private void switchToTab(TabSheet.Tab destination) {
+    private void switchToTab(Tab destination,
+        Direction direction
+    ) {
 
-        WizardStepPreChangeEvent stepPreChangeEvent = new WizardStepPreChangeEvent(this, currentTab, destination);
+        WizardStepPreChangeEvent stepPreChangeEvent = new WizardStepPreChangeEvent(this, currentTab, destination, direction);
         getEventHub().publish(WizardStepPreChangeEvent.class, stepPreChangeEvent);
 
-        if (!stepPreChangeEvent.isCommitPrevented()) {
+        if (!stepPreChangeEvent.isStepChangePrevented()) {
 
             enableTab(destination);
 
             tabSheetLayout.setSelectedTab(destination);
-            WizardStepChangeEvent wizardStepChangeEvent = new WizardStepChangeEvent(this, currentTab, destination);
+            WizardStepChangeEvent wizardStepChangeEvent = new WizardStepChangeEvent(this, currentTab, destination, direction);
             getEventHub().publish(WizardStepChangeEvent.class, wizardStepChangeEvent);
 
         }
@@ -260,12 +262,10 @@ public class SimpleWebWizard extends AbstractSimpleWebWizard {
 
     @Override
     public void nextStep() {
-        switchToTab(findNextTab());
+        switchToTab(findNextTab(), Direction.NEXT);
     }
     @Override
     public void previousStep() {
-        switchToTab(findPrevTab());
+        switchToTab(findPrevTab(), Direction.PREVIOUS);
     }
-
-
 }
