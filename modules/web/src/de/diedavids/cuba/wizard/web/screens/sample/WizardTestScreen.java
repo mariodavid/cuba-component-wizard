@@ -8,8 +8,8 @@ import com.haulmont.cuba.gui.screen.UiDescriptor;
 import de.diedavids.cuba.wizard.gui.components.Wizard;
 import de.diedavids.cuba.wizard.gui.components.Wizard.WizardCancelClickEvent;
 import de.diedavids.cuba.wizard.gui.components.Wizard.WizardFinishClickEvent;
-import de.diedavids.cuba.wizard.gui.components.Wizard.WizardStepChangeEvent;
-import de.diedavids.cuba.wizard.gui.components.Wizard.WizardStepPreChangeEvent;
+import de.diedavids.cuba.wizard.gui.components.Wizard.WizardTabChangeEvent;
+import de.diedavids.cuba.wizard.gui.components.Wizard.WizardTabPreChangeEvent;
 import java.util.EventObject;
 import java.util.HashMap;
 import javax.inject.Inject;
@@ -34,13 +34,13 @@ public class WizardTestScreen extends Screen {
     }
 
     @Subscribe("wizard")
-    protected void onWizardStepPreChangeEvent(WizardStepPreChangeEvent event) {
-        events.put(WizardStepPreChangeEvent.class, event);
+    protected void onWizardStepPreChangeEvent(WizardTabPreChangeEvent event) {
+        events.put(WizardTabPreChangeEvent.class, event);
     }
 
     @Subscribe("wizard")
-    protected void onWizardStepChangeEvent(WizardStepChangeEvent event) {
-        events.put(WizardStepChangeEvent.class, event);
+    protected void onWizardStepChangeEvent(WizardTabChangeEvent event) {
+        events.put(WizardTabChangeEvent.class, event);
     }
 
     @Subscribe("wizard")

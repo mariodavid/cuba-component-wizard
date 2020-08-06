@@ -9,8 +9,8 @@ import de.diedavids.cuba.wizard.gui.components.Wizard;
 import de.diedavids.cuba.wizard.gui.components.Wizard.Direction;
 import de.diedavids.cuba.wizard.gui.components.Wizard.WizardCancelClickEvent;
 import de.diedavids.cuba.wizard.gui.components.Wizard.WizardFinishClickEvent;
-import de.diedavids.cuba.wizard.gui.components.Wizard.WizardStepChangeEvent;
-import de.diedavids.cuba.wizard.gui.components.Wizard.WizardStepPreChangeEvent;
+import de.diedavids.cuba.wizard.gui.components.Wizard.WizardTabChangeEvent;
+import de.diedavids.cuba.wizard.gui.components.Wizard.WizardTabPreChangeEvent;
 import de.diedavids.cuba.wizard.web.screens.sample.WizardTestScreen;
 import de.diedavids.sneferu.environment.SneferuTestUiEnvironment;
 import de.diedavids.sneferu.screen.StandardScreenTestAPI;
@@ -68,10 +68,10 @@ class WizardEventsTest {
 
         // then:
 
-        assertThat(event(WizardStepPreChangeEvent.class))
+        assertThat(event(WizardTabPreChangeEvent.class))
             .isNotNull();
 
-        assertThat(event(WizardStepChangeEvent.class))
+        assertThat(event(WizardTabChangeEvent.class))
             .isNotNull();
     }
 
@@ -86,10 +86,10 @@ class WizardEventsTest {
         nextBtn.click();
 
         // then:
-        assertThat(event(WizardStepPreChangeEvent.class).getDirection())
+        assertThat(event(WizardTabPreChangeEvent.class).getDirection())
             .isEqualTo(Direction.NEXT);
 
-        assertThat(event(WizardStepChangeEvent.class).getDirection())
+        assertThat(event(WizardTabChangeEvent.class).getDirection())
             .isEqualTo(Direction.NEXT);
     }
 
@@ -104,10 +104,10 @@ class WizardEventsTest {
         wizardBtn("prev").click();
 
         // then:
-        assertThat(event(WizardStepPreChangeEvent.class).getDirection())
+        assertThat(event(WizardTabPreChangeEvent.class).getDirection())
             .isEqualTo(Direction.PREVIOUS);
 
-        assertThat(event(WizardStepChangeEvent.class).getDirection())
+        assertThat(event(WizardTabChangeEvent.class).getDirection())
             .isEqualTo(Direction.PREVIOUS);
     }
 
@@ -122,7 +122,7 @@ class WizardEventsTest {
         nextBtn.click();
 
         // then:
-        assertThat(event(WizardStepChangeEvent.class))
+        assertThat(event(WizardTabChangeEvent.class))
             .isNotNull();
     }
 
@@ -132,13 +132,13 @@ class WizardEventsTest {
         // given:
         final Button nextBtn = wizardBtn("next");
 
-        wizard.addWizardStepPreChangeListener(event -> event.preventStepChange());
+        wizard.addWizardTabPreChangeListener(event -> event.preventTabChange());
 
         // when:
         nextBtn.click();
 
         // then:
-        assertThat(event(WizardStepChangeEvent.class))
+        assertThat(event(WizardTabChangeEvent.class))
             .isNull();
     }
 
@@ -146,7 +146,7 @@ class WizardEventsTest {
     void when_finishIsPerformed_then_wizardFinishEventHasBeenReceived() {
 
         // given:
-        wizard.nextStep();
+        wizard.nextTab();
 
         // and:
         final Button finishBtn = wizardBtn("finish");

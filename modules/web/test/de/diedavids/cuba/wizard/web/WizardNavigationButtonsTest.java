@@ -56,7 +56,7 @@ class WizardNavigationButtonsTest {
     void when_nextStepIsPerformed_then_wizardButtonStateChangesAccordingly() {
 
         // when:
-        wizard.nextStep();
+        wizard.nextTab();
 
         // then:
         assertThat(button(wizard, "next").isEnabled())
@@ -72,7 +72,7 @@ class WizardNavigationButtonsTest {
     void when_nextStepIsPerformed_then_secondStepIsActive() {
 
         // when:
-        wizard.nextStep();
+        wizard.nextTab();
 
         // then:
         assertThat(wizard.getSelectedTab())
@@ -86,10 +86,10 @@ class WizardNavigationButtonsTest {
     void when_previousStepIsPerformed_then_wizardButtonStateChangesAccordingly() {
 
         // given:
-        wizard.nextStep();
+        wizard.nextTab();
 
         // when:
-        wizard.previousStep();
+        wizard.previousTab();
 
         // then:
         assertThat(button(wizard, "next").isEnabled())
@@ -104,10 +104,10 @@ class WizardNavigationButtonsTest {
     void when_previousStepIsPerformed_then_firstStepIsActive() {
 
         // given:
-        wizard.nextStep();
+        wizard.nextTab();
 
         // when:
-        wizard.previousStep();
+        wizard.previousTab();
 
         // then:
         assertThat(wizard.getSelectedTab())

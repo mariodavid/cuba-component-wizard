@@ -191,23 +191,23 @@ public abstract class AbstractWebWizard extends WebCssLayout
 
 
     @Override
-    public Subscription addWizardStepChangeListener(Consumer<WizardStepChangeEvent> listener) {
-        return getEventHub().subscribe(WizardStepChangeEvent.class, listener);
+    public Subscription addWizardTabChangeListener(Consumer<WizardTabChangeEvent> listener) {
+        return getEventHub().subscribe(WizardTabChangeEvent.class, listener);
     }
 
     @Override
-    public void removeWizardStepChangeListener(Consumer<WizardStepChangeEvent> listener) {
-        getEventHub().unsubscribe(WizardStepChangeEvent.class, listener);
+    public void removeWizardTabChangeListener(Consumer<WizardTabChangeEvent> listener) {
+        getEventHub().unsubscribe(WizardTabChangeEvent.class, listener);
     }
 
     @Override
-    public Subscription addWizardStepPreChangeListener(Consumer<WizardStepPreChangeEvent> listener) {
-        return getEventHub().subscribe(WizardStepPreChangeEvent.class, listener);
+    public Subscription addWizardTabPreChangeListener(Consumer<WizardTabPreChangeEvent> listener) {
+        return getEventHub().subscribe(WizardTabPreChangeEvent.class, listener);
     }
 
     @Override
-    public void removeWizardStepPreChangeListener(Consumer<WizardStepPreChangeEvent> listener) {
-        getEventHub().unsubscribe(WizardStepPreChangeEvent.class, listener);
+    public void removeWizardTabPreChangeListener(Consumer<WizardTabPreChangeEvent> listener) {
+        getEventHub().unsubscribe(WizardTabPreChangeEvent.class, listener);
     }
 
     @Override

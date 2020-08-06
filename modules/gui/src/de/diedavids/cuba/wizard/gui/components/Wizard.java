@@ -12,9 +12,9 @@ public interface Wizard extends TabSheet {
 
     String NAME = "wizard";
 
-    void nextStep();
+    void nextTab();
 
-    void previousStep();
+    void previousTab();
 
     enum Direction {
         NEXT,
@@ -25,26 +25,26 @@ public interface Wizard extends TabSheet {
     /**
      * Add a listener that will be notified when a step change happened
      */
-    Subscription addWizardStepChangeListener(Consumer<WizardStepChangeEvent> listener);
-    void removeWizardStepChangeListener(Consumer<WizardStepChangeEvent> listener);
+    Subscription addWizardTabChangeListener(Consumer<WizardTabChangeEvent> listener);
+    void removeWizardTabChangeListener(Consumer<WizardTabChangeEvent> listener);
 
     /**
      * Add a listener that will be notified when a step is going to be changed
      */
-    Subscription addWizardStepPreChangeListener(Consumer<WizardStepPreChangeEvent> listener);
-    void removeWizardStepPreChangeListener(Consumer<WizardStepPreChangeEvent> listener);
+    Subscription addWizardTabPreChangeListener(Consumer<WizardTabPreChangeEvent> listener);
+    void removeWizardTabPreChangeListener(Consumer<WizardTabPreChangeEvent> listener);
 
 
-    class WizardStepChangeEvent extends EventObject {
+    class WizardTabChangeEvent extends EventObject {
 
-        TabSheet.Tab prevStep;
-        TabSheet.Tab step;
+        TabSheet.Tab oldTab;
+        TabSheet.Tab newTab;
         Direction direction;
 
-        public WizardStepChangeEvent(Wizard source, TabSheet.Tab prevStep, TabSheet.Tab step, Direction direction) {
+        public WizardTabChangeEvent(Wizard source, TabSheet.Tab oldTab, TabSheet.Tab newTab, Direction direction) {
             super(source);
-            this.prevStep = prevStep;
-            this.step = step;
+            this.oldTab = oldTab;
+            this.newTab = newTab;
             this.direction = direction;
         }
 
@@ -57,28 +57,28 @@ public interface Wizard extends TabSheet {
             return (Wizard) super.getSource();
         }
 
-        public TabSheet.Tab getPrevStep() {
-            return prevStep;
+        public TabSheet.Tab getOldTab() {
+            return oldTab;
         }
 
-        public TabSheet.Tab getStep() {
-            return step;
+        public TabSheet.Tab getNewTab() {
+            return newTab;
         }
     }
 
-    class WizardStepPreChangeEvent extends EventObject {
+    class WizardTabPreChangeEvent extends EventObject {
 
-        TabSheet.Tab prevStep;
-        TabSheet.Tab step;
+        TabSheet.Tab oldTab;
+        TabSheet.Tab newTab;
 
         Direction direction;
 
-        private boolean stepChangePrevented = false;
+        private boolean tabChangePrevented = false;
 
-        public WizardStepPreChangeEvent(Wizard source, TabSheet.Tab prevStep, TabSheet.Tab step, Direction direction) {
+        public WizardTabPreChangeEvent(Wizard source, TabSheet.Tab oldTab, TabSheet.Tab newTab, Direction direction) {
             super(source);
-            this.prevStep = prevStep;
-            this.step = step;
+            this.oldTab = oldTab;
+            this.newTab = newTab;
             this.direction = direction;
         }
 
@@ -90,27 +90,27 @@ public interface Wizard extends TabSheet {
             return (Wizard) super.getSource();
         }
 
-        public TabSheet.Tab getPrevStep() {
-            return prevStep;
+        public TabSheet.Tab getOldTab() {
+            return oldTab;
         }
 
-        public TabSheet.Tab getStep() {
-            return step;
+        public TabSheet.Tab getNewTab() {
+            return newTab;
         }
 
 
         /**
-         * Invoke this method if you want to abort the commit.
+         * Invoke this method if you want to abort the tab change.
          */
-        public void preventStepChange() {
-            stepChangePrevented = true;
+        public void preventTabChange() {
+            tabChangePrevented = true;
         }
 
         /**
-         * Returns true if {@link #preventStepChange()} method was called and commit will be aborted.
+         * Returns true if {@link #preventTabChange()} method was called and tab change will be aborted.
          */
-        public boolean isStepChangePrevented() {
-            return stepChangePrevented;
+        public boolean isTabChangePrevented() {
+            return tabChangePrevented;
         }
     }
 

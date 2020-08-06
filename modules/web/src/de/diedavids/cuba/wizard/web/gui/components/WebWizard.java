@@ -11,21 +11,15 @@ import com.haulmont.cuba.gui.components.TabSheet;
 import de.diedavids.cuba.wizard.gui.components.Wizard;
 import de.diedavids.cuba.wizard.web.gui.components.WizardButtonsPanel.WizardButtonType;
 import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 public class WebWizard extends AbstractWebWizard {
 
 
-    protected Map<Tab, TabSheet.Tab> steps = new LinkedHashMap<>();
-
     protected List<Tab> tabList = new LinkedList<>();
 
-
     protected Wizard wizard;
-    protected TabSheet.Tab currentStep;
     protected TabSheet.Tab currentTab;
 
     private WizardButtonsPanel buttonsPanel;
@@ -62,7 +56,7 @@ public class WebWizard extends AbstractWebWizard {
         tabSheetLayout.setStyleName("centered-tabs equal-width-tabs icons-on-top");
 
         tabSheetLayout.addSelectedTabChangeListener(event -> {
-            setCurrentStep(event);
+            setCurrentTab(event);
             disableAllOtherTabs(event.getSelectedTab());
             refreshWizardButtonPanel();
         });
@@ -74,9 +68,9 @@ public class WebWizard extends AbstractWebWizard {
 
     private void addWizardShortcutActions() {
         layoutWrapper.addShortcutAction(new ShortcutAction("CTRL-ALT-ARROW_RIGHT",
-            shortcutTriggeredEvent -> nextStep()));
+            shortcutTriggeredEvent -> nextTab()));
         layoutWrapper.addShortcutAction(new ShortcutAction("CTRL-ALT-ARROW_LEFT",
-            shortcutTriggeredEvent -> previousStep()));
+            shortcutTriggeredEvent -> previousTab()));
     }
 
     @Override
@@ -91,13 +85,12 @@ public class WebWizard extends AbstractWebWizard {
 
     private TabSheet createTabSheetLayout() {
         TabSheet tabSheetLayout = uiComponents.create(TabSheet.class);
-        tabSheetLayout.setWidth("100%");
+        tabSheetLayout.setWidthFull();
         return tabSheetLayout;
     }
 
-    private void setCurrentStep(TabSheet.SelectedTabChangeEvent event) {
+    private void setCurrentTab(TabSheet.SelectedTabChangeEvent event) {
         currentTab = event.getSelectedTab();
-        currentStep = steps.get(currentTab);
     }
 
     private void refreshWizardButtonPanel() {
@@ -134,12 +127,12 @@ public class WebWizard extends AbstractWebWizard {
                 ),
                 WizardButtonsPanel.buttonDescriptor(
                     WizardButtonType.PREVIOUS,
-                    e -> previousStep(),
+                    e -> previousTab(),
                     () -> !currentTabIsFirstTab()
                 ),
                 WizardButtonsPanel.buttonDescriptor(
                     WizardButtonType.NEXT,
-                    e -> nextStep(),
+                    e -> nextTab(),
                     () -> !currentTabIsLastTab()
                 ),
                 WizardButtonsPanel.buttonDescriptor(
@@ -160,18 +153,27 @@ public class WebWizard extends AbstractWebWizard {
         Direction direction
     ) {
 
-        WizardStepPreChangeEvent stepPreChangeEvent = new WizardStepPreChangeEvent(this, currentTab,
-            destination, direction);
-        getEventHub().publish(WizardStepPreChangeEvent.class, stepPreChangeEvent);
+        WizardTabPreChangeEvent tabPreChangeEvent = new WizardTabPreChangeEvent(
+            this,
+            currentTab,
+            destination,
+            direction
+        );
+        getEventHub().publish(WizardTabPreChangeEvent.class, tabPreChangeEvent);
 
-        if (!stepPreChangeEvent.isStepChangePrevented()) {
+        if (!tabPreChangeEvent.isTabChangePrevented()) {
 
             enableTab(destination);
 
             tabSheetLayout.setSelectedTab(destination);
-            WizardStepChangeEvent wizardStepChangeEvent = new WizardStepChangeEvent(this,
-                currentTab, destination, direction);
-            getEventHub().publish(WizardStepChangeEvent.class, wizardStepChangeEvent);
+
+            WizardTabChangeEvent wizardTabChangeEvent = new WizardTabChangeEvent(
+                this,
+                currentTab,
+                destination,
+                direction
+            );
+            getEventHub().publish(WizardTabChangeEvent.class, wizardTabChangeEvent);
 
         }
     }
@@ -229,12 +231,12 @@ public class WebWizard extends AbstractWebWizard {
     }
 
     @Override
-    public void nextStep() {
+    public void nextTab() {
         switchToTab(findNextTab(), Direction.NEXT);
     }
 
     @Override
-    public void previousStep() {
+    public void previousTab() {
         switchToTab(findPrevTab(), Direction.PREVIOUS);
     }
 }
