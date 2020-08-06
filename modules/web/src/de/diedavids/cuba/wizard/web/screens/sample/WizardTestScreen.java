@@ -1,15 +1,15 @@
-package de.diedavids.cuba.wizard.web.screens.sample.cuba7;
+package de.diedavids.cuba.wizard.web.screens.sample;
 
 import com.haulmont.cuba.gui.components.TabSheet.SelectedTabChangeEvent;
 import com.haulmont.cuba.gui.screen.Screen;
 import com.haulmont.cuba.gui.screen.Subscribe;
 import com.haulmont.cuba.gui.screen.UiController;
 import com.haulmont.cuba.gui.screen.UiDescriptor;
-import de.diedavids.cuba.wizard.gui.components.simple.SimpleWizard;
-import de.diedavids.cuba.wizard.gui.components.simple.SimpleWizard.WizardCancelClickEvent;
-import de.diedavids.cuba.wizard.gui.components.simple.SimpleWizard.WizardFinishClickEvent;
-import de.diedavids.cuba.wizard.gui.components.simple.SimpleWizard.WizardStepChangeEvent;
-import de.diedavids.cuba.wizard.gui.components.simple.SimpleWizard.WizardStepPreChangeEvent;
+import de.diedavids.cuba.wizard.gui.components.Wizard;
+import de.diedavids.cuba.wizard.gui.components.Wizard.WizardCancelClickEvent;
+import de.diedavids.cuba.wizard.gui.components.Wizard.WizardFinishClickEvent;
+import de.diedavids.cuba.wizard.gui.components.Wizard.WizardStepChangeEvent;
+import de.diedavids.cuba.wizard.gui.components.Wizard.WizardStepPreChangeEvent;
 import java.util.EventObject;
 import java.util.HashMap;
 import javax.inject.Inject;
@@ -19,7 +19,7 @@ import javax.inject.Inject;
 public class WizardTestScreen extends Screen {
 
     @Inject
-    protected SimpleWizard wizard;
+    protected Wizard wizard;
 
     private HashMap<Class, ? super EventObject> events = new HashMap<>();
 

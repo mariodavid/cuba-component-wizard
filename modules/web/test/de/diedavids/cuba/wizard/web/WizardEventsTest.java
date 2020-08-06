@@ -5,13 +5,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.haulmont.cuba.web.app.main.MainScreen;
 import com.vaadin.ui.Button;
 import de.diedavids.cuba.wizard.DdcwWebTestContainer;
-import de.diedavids.cuba.wizard.gui.components.simple.SimpleWizard;
-import de.diedavids.cuba.wizard.gui.components.simple.SimpleWizard.Direction;
-import de.diedavids.cuba.wizard.gui.components.simple.SimpleWizard.WizardCancelClickEvent;
-import de.diedavids.cuba.wizard.gui.components.simple.SimpleWizard.WizardFinishClickEvent;
-import de.diedavids.cuba.wizard.gui.components.simple.SimpleWizard.WizardStepChangeEvent;
-import de.diedavids.cuba.wizard.gui.components.simple.SimpleWizard.WizardStepPreChangeEvent;
-import de.diedavids.cuba.wizard.web.screens.sample.cuba7.WizardTestScreen;
+import de.diedavids.cuba.wizard.gui.components.Wizard;
+import de.diedavids.cuba.wizard.gui.components.Wizard.Direction;
+import de.diedavids.cuba.wizard.gui.components.Wizard.WizardCancelClickEvent;
+import de.diedavids.cuba.wizard.gui.components.Wizard.WizardFinishClickEvent;
+import de.diedavids.cuba.wizard.gui.components.Wizard.WizardStepChangeEvent;
+import de.diedavids.cuba.wizard.gui.components.Wizard.WizardStepPreChangeEvent;
+import de.diedavids.cuba.wizard.web.screens.sample.WizardTestScreen;
 import de.diedavids.sneferu.environment.SneferuTestUiEnvironment;
 import de.diedavids.sneferu.screen.StandardScreenTestAPI;
 import java.util.EventObject;
@@ -21,7 +21,7 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 class WizardEventsTest {
 
-    private SimpleWizard wizard;
+    private Wizard wizard;
 
     @RegisterExtension
     SneferuTestUiEnvironment environment =
@@ -40,7 +40,7 @@ class WizardEventsTest {
         wizardTestScreen = environment
             .getUiTestAPI().openStandardScreen(WizardTestScreen.class);
 
-        wizard = (SimpleWizard) wizardTestScreen.screen().getWindow().getComponent("wizard");
+        wizard = (Wizard) wizardTestScreen.screen().getWindow().getComponent("wizard");
     }
 
     @Test

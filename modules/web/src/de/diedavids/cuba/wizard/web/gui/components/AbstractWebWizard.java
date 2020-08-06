@@ -1,4 +1,4 @@
-package de.diedavids.cuba.wizard.web.gui.components.simple;
+package de.diedavids.cuba.wizard.web.gui.components;
 
 import com.haulmont.bali.events.Subscription;
 import com.haulmont.cuba.core.global.AppBeans;
@@ -15,15 +15,15 @@ import com.haulmont.cuba.web.gui.components.WebComponentsHelper;
 import com.haulmont.cuba.web.gui.components.WebCssLayout;
 import com.haulmont.cuba.web.gui.components.WebTabSheet;
 import com.haulmont.cuba.web.widgets.CubaCssActionsLayout;
-import de.diedavids.cuba.wizard.gui.components.simple.SimpleWizard;
+import de.diedavids.cuba.wizard.gui.components.Wizard;
 import java.util.Collection;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 import javax.annotation.Nullable;
 import org.dom4j.Element;
 
-public abstract class AbstractSimpleWebWizard extends WebCssLayout
-    implements SimpleWizard, UiPermissionAware, SupportsChildrenSelection {
+public abstract class AbstractWebWizard extends WebCssLayout
+    implements Wizard, UiPermissionAware, SupportsChildrenSelection {
 
 
     protected final UiComponents uiComponents;
@@ -33,7 +33,7 @@ public abstract class AbstractSimpleWebWizard extends WebCssLayout
     protected TabSheet tabSheetLayout;
 
 
-    public AbstractSimpleWebWizard() {
+    public AbstractWebWizard() {
         uiComponents = AppBeans.get(UiComponents.NAME);
         messages = AppBeans.get(Messages.NAME);
 

@@ -1,36 +1,55 @@
 package de.diedavids.cuba.wizard.gui.components;
 
-import com.haulmont.cuba.gui.components.Component;
-import com.haulmont.cuba.gui.components.Frame;
-import com.haulmont.cuba.gui.components.OrderedContainer;
-
+import com.haulmont.bali.events.Subscription;
+import com.haulmont.cuba.gui.components.TabSheet;
 import java.util.EventObject;
+import java.util.function.Consumer;
 
-public interface Wizard extends OrderedContainer,
-                Component.HasIcon, Component.HasCaption {
+/**
+ * Wizard component interface.
+ */
+public interface Wizard extends TabSheet {
+
     String NAME = "wizard";
 
-    WizardStep addStep(int index, String name, AbstractWizardStep wizardStep);
-    void addStep(int index, WizardStep wizardStep);
+    void nextStep();
 
-    WizardStep getStep(String stepId);
+    void previousStep();
 
-    void addWizardStepChangeListener(WizardStepChangeListener listener);
-    void removeWizardStepChangeListener(WizardStepChangeListener listener);
+    enum Direction {
+        NEXT,
+        PREVIOUS
+    }
 
-    void removeStep(String name);
 
-    void init();
+    /**
+     * Add a listener that will be notified when a step change happened
+     */
+    Subscription addWizardStepChangeListener(Consumer<WizardStepChangeEvent> listener);
+    void removeWizardStepChangeListener(Consumer<WizardStepChangeEvent> listener);
+
+    /**
+     * Add a listener that will be notified when a step is going to be changed
+     */
+    Subscription addWizardStepPreChangeListener(Consumer<WizardStepPreChangeEvent> listener);
+    void removeWizardStepPreChangeListener(Consumer<WizardStepPreChangeEvent> listener);
+
 
     class WizardStepChangeEvent extends EventObject {
 
-        WizardStep prevStep;
-        WizardStep step;
+        TabSheet.Tab prevStep;
+        TabSheet.Tab step;
+        Direction direction;
 
-        public WizardStepChangeEvent(Wizard source, WizardStep prevStep, WizardStep step) {
+        public WizardStepChangeEvent(Wizard source, TabSheet.Tab prevStep, TabSheet.Tab step, Direction direction) {
             super(source);
             this.prevStep = prevStep;
             this.step = step;
+            this.direction = direction;
+        }
+
+        public Direction getDirection() {
+            return direction;
         }
 
         @Override
@@ -38,23 +57,69 @@ public interface Wizard extends OrderedContainer,
             return (Wizard) super.getSource();
         }
 
-        public WizardStep getPrevStep() {
+        public TabSheet.Tab getPrevStep() {
             return prevStep;
         }
 
-        public WizardStep getStep() {
+        public TabSheet.Tab getStep() {
             return step;
         }
     }
 
-    @FunctionalInterface
-    interface WizardStepChangeListener extends java.util.function.Consumer<Wizard.WizardStepChangeEvent> {
-        void accept(Wizard.WizardStepChangeEvent event);
+    class WizardStepPreChangeEvent extends EventObject {
+
+        TabSheet.Tab prevStep;
+        TabSheet.Tab step;
+
+        Direction direction;
+
+        private boolean stepChangePrevented = false;
+
+        public WizardStepPreChangeEvent(Wizard source, TabSheet.Tab prevStep, TabSheet.Tab step, Direction direction) {
+            super(source);
+            this.prevStep = prevStep;
+            this.step = step;
+            this.direction = direction;
+        }
+
+        public Direction getDirection() {
+            return direction;
+        }
+        @Override
+        public Wizard getSource() {
+            return (Wizard) super.getSource();
+        }
+
+        public TabSheet.Tab getPrevStep() {
+            return prevStep;
+        }
+
+        public TabSheet.Tab getStep() {
+            return step;
+        }
+
+
+        /**
+         * Invoke this method if you want to abort the commit.
+         */
+        public void preventStepChange() {
+            stepChangePrevented = true;
+        }
+
+        /**
+         * Returns true if {@link #preventStepChange()} method was called and commit will be aborted.
+         */
+        public boolean isStepChangePrevented() {
+            return stepChangePrevented;
+        }
     }
 
 
-    void addWizardCancelClickListener(WizardCancelClickListener listener);
-    void removeWizardCancelClickListener(WizardCancelClickListener listener);
+    /**
+     * Add a listener that will be notified when a wizards cancel operation is performed
+     */
+    Subscription addWizardCancelClickListener(Consumer<WizardCancelClickEvent> listener);
+    void removeWizardCancelClickListener(Consumer<WizardCancelClickEvent> listener);
 
     class WizardCancelClickEvent extends EventObject {
         public WizardCancelClickEvent(Wizard source) {
@@ -67,16 +132,12 @@ public interface Wizard extends OrderedContainer,
         }
     }
 
-    @FunctionalInterface
-    interface WizardCancelClickListener extends java.util.function.Consumer<Wizard.WizardCancelClickEvent> {
-        void accept(Wizard.WizardCancelClickEvent event);
-    }
 
-
-
-
-    void addWizardFinishClickListener(WizardFinishClickListener listener);
-    void removeWizardFinishClickListener(WizardFinishClickListener listener);
+    /**
+     * Add a listener that will be notified when a wizards finish operation is performed
+     */
+    Subscription addWizardFinishClickListener(Consumer<WizardFinishClickEvent> listener);
+    void removeWizardFinishClickListener(Consumer<WizardFinishClickEvent> listener);
 
     class WizardFinishClickEvent extends EventObject {
         public WizardFinishClickEvent(Wizard source) {
@@ -87,10 +148,5 @@ public interface Wizard extends OrderedContainer,
         public Wizard getSource() {
             return (Wizard) super.getSource();
         }
-    }
-
-    @FunctionalInterface
-    interface WizardFinishClickListener extends java.util.function.Consumer<Wizard.WizardFinishClickEvent> {
-        void accept(Wizard.WizardFinishClickEvent event);
     }
 }

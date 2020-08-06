@@ -5,8 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.haulmont.cuba.gui.components.ComponentContainer;
 import com.haulmont.cuba.web.app.main.MainScreen;
 import de.diedavids.cuba.wizard.DdcwWebTestContainer;
-import de.diedavids.cuba.wizard.gui.components.simple.SimpleWizard;
-import de.diedavids.cuba.wizard.web.screens.sample.cuba7.WizardTestScreen;
+import de.diedavids.cuba.wizard.gui.components.Wizard;
+import de.diedavids.cuba.wizard.web.screens.sample.WizardTestScreen;
 import de.diedavids.sneferu.environment.SneferuTestUiEnvironment;
 import de.diedavids.sneferu.screen.StandardScreenTestAPI;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,14 +24,14 @@ class WizardRenderingTest {
             )
             .withUserLogin("admin")
             .withMainScreen(MainScreen.class);
-    private SimpleWizard wizard;
+    private Wizard wizard;
 
     @BeforeEach
     void setUp() {
         StandardScreenTestAPI<WizardTestScreen> wizardScreen = environment
             .getUiTestAPI().openStandardScreen(WizardTestScreen.class);
 
-        wizard = (SimpleWizard) wizardScreen.screen().getWindow().getComponent("wizard");
+        wizard = (Wizard) wizardScreen.screen().getWindow().getComponent("wizard");
 
     }
 

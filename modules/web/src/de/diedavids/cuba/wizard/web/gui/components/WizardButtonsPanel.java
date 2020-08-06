@@ -1,4 +1,4 @@
-package de.diedavids.cuba.wizard.web.gui.components.simple;
+package de.diedavids.cuba.wizard.web.gui.components;
 
 import com.haulmont.cuba.core.global.Messages;
 import com.haulmont.cuba.gui.UiComponents;

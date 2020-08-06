@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
-        caption="msg://wizardNew.caption"
+        caption="msg://wizard.caption"
         xmlns:wizard="http://schemas.diedavids.de/wizard/0.2/wizard-component.xsd"
-        messagesPack="de.diedavids.cuba.wizard.web.screens.sample.cuba7">
+        messagesPack="de.diedavids.cuba.wizard.web.screens.sample">
     <layout>
-        <wizard:simpleWizard id="wizard" width="100%" height="100%" caption="msg://simpleWizard">
-            <tab
+        <wizard:wizard id="wizard" width="100%" height="100%" caption="msg://wizard">
+            <wizard:tab
               id="step1Tab"
               caption="msg://step1"
               icon="font-icon:ADN"
@@ -13,15 +13,15 @@
               margin="true"
             >
                 <button id="checkBtn" icon="font-icon:CHECK" />
-            </tab>
-            <tab
+            </wizard:tab>
+            <wizard:tab
               id="step2Tab"
               caption="msg://step2"
               icon="font-icon:ADN"
             >
                 <button id="check2Btn" icon="font-icon:CHECK" />
-            </tab>
-        </wizard:simpleWizard>
+            </wizard:tab>
+        </wizard:wizard>
 
     </layout>
 </window>
