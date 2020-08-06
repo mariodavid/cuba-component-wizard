@@ -8,13 +8,17 @@ import com.haulmont.cuba.gui.components.ButtonsPanel;
 import com.haulmont.cuba.gui.components.Component.Alignment;
 import com.haulmont.cuba.gui.components.actions.BaseAction;
 import com.haulmont.cuba.gui.components.actions.BaseAction.EnabledRule;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class WizardButtonsPanel {
 
-    UiComponents uiComponents;
-    Messages messages;
+    private final UiComponents uiComponents;
+    private final Messages messages;
+
+    private final Map<WizardButtonType, BaseAction> actions = new HashMap<>();
 
     public WizardButtonsPanel(
         UiComponents uiComponents,
@@ -24,25 +28,32 @@ public class WizardButtonsPanel {
         this.messages = messages;
     }
 
-    private BaseAction cancelAction;
-    private BaseAction nextAction;
-    private BaseAction prevAction;
-    private BaseAction finishAction;
-
     public void refresh() {
-        nextAction.refreshState();
-        prevAction.refreshState();
-        finishAction.refreshState();
+
+        actions
+            .forEach((key, value) ->
+                value.refreshState()
+            );
     }
 
     public enum WizardButtonType {
-        CANCEL,
-        PREVIOUS,
-        NEXT,
-        FINISH;
+        CANCEL("cancel"),
+        PREVIOUS("prev"),
+        NEXT("next"),
+        FINISH("finish");
+
+        private final String id;
+
+        WizardButtonType(String id) {
+            this.id = id;
+        }
+
+        public String getId() {
+            return id;
+        }
     }
 
-    static public WizardButtonDescriptor button(
+    static public WizardButtonDescriptor buttonDescriptor(
         WizardButtonType type,
         Consumer<ActionPerformedEvent> clickHandler,
         EnabledRule enabledRule
@@ -99,9 +110,9 @@ public class WizardButtonsPanel {
         wizardButtonsPanel.setAlignment(Alignment.TOP_RIGHT);
 
         wizardButtonsPanel.add(createCancelBtn(descriptors.byType(WizardButtonType.CANCEL)));
-        wizardButtonsPanel.add(createNextBtn(descriptors.byType(WizardButtonType.NEXT)));
-        wizardButtonsPanel.add(createPrevBtn(descriptors.byType(WizardButtonType.PREVIOUS)));
-        wizardButtonsPanel.add(createFinishBtn(descriptors.byType(WizardButtonType.FINISH)));
+        wizardButtonsPanel.add(createBtn(descriptors.byType(WizardButtonType.PREVIOUS)));
+        wizardButtonsPanel.add(createBtn(descriptors.byType(WizardButtonType.NEXT)));
+        wizardButtonsPanel.add(createBtn(descriptors.byType(WizardButtonType.FINISH)));
 
         return wizardButtonsPanel;
     }
@@ -109,62 +120,36 @@ public class WizardButtonsPanel {
     private Button createCancelBtn(
         WizardButtonDescriptor descriptor
     ) {
-        Button cancelBtn = createWizardControlBtn("cancel");
-        cancelBtn.setTabIndex(-1);
-        cancelAction = wizardAction(cancelBtn, descriptor.clickHandler);
-        cancelAction.addEnabledRule(descriptor.enabledRule);
-        cancelBtn.setAction(cancelAction);
-        return cancelBtn;
+        Button btn = createBtn(descriptor);
+        btn.setTabIndex(-1);
+        return btn;
     }
 
-    private Button createPrevBtn(
+    private Button createBtn(
         WizardButtonDescriptor descriptor
     ) {
-        Button prevBtn = createWizardControlBtn("prev");
+        String id = descriptor.type.getId();
+        Button btn = uiComponents.create(Button.class);
+        btn.setId(id);
+        btn.setCaption(messages.getMessage(this.getClass(), id + "BtnCaption"));
+        btn.setIcon(messages.getMessage(this.getClass(), id + "BtnIcon"));
 
-        prevAction = wizardAction(prevBtn, descriptor.clickHandler);
-        prevAction.addEnabledRule(descriptor.enabledRule);
+        BaseAction action = wizardAction(btn, descriptor);
+        btn.setAction(action);
+        actions.put(descriptor.type, action);
 
-        prevBtn.setAction(prevAction);
-        return prevBtn;
-    }
-
-
-    private Button createNextBtn(
-        WizardButtonDescriptor descriptor
-    ) {
-        Button nextBtn = createWizardControlBtn("next");
-        nextAction = wizardAction(nextBtn, descriptor.clickHandler);
-        nextAction.addEnabledRule(descriptor.enabledRule);
-        nextBtn.setAction(nextAction);
-        return nextBtn;
-    }
-
-    private Button createFinishBtn(
-        WizardButtonDescriptor descriptor
-    ) {
-        Button finishBtn = createWizardControlBtn("finish");
-        finishAction = wizardAction(finishBtn, descriptor.clickHandler);
-        finishAction.addEnabledRule(descriptor.enabledRule);
-        finishBtn.setAction(finishAction);
-        return finishBtn;
+        return btn;
     }
 
 
     private BaseAction wizardAction(
         Button button,
-        Consumer<ActionPerformedEvent> handler
+        WizardButtonDescriptor handler
     ) {
-        return new BaseAction(button.getId())
-            .withHandler(handler);
-    }
-
-    private Button createWizardControlBtn(String id) {
-        Button btn = uiComponents.create(Button.class);
-        btn.setId(id);
-        btn.setCaption(messages.getMessage(this.getClass(), id + "BtnCaption"));
-        btn.setIcon(messages.getMessage(this.getClass(), id + "BtnIcon"));
-        return btn;
+        final BaseAction action = new BaseAction(button.getId())
+            .withHandler(handler.clickHandler);
+        action.addEnabledRule(handler.enabledRule);
+        return action;
     }
 
 }

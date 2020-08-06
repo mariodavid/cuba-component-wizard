@@ -1,5 +1,7 @@
 package de.diedavids.cuba.wizard.web.gui.components.simple;
 
+import static java.util.Arrays.asList;
+
 import com.haulmont.cuba.gui.components.Action.ActionPerformedEvent;
 import com.haulmont.cuba.gui.components.ButtonsPanel;
 import com.haulmont.cuba.gui.components.Component;
@@ -8,7 +10,6 @@ import com.haulmont.cuba.gui.components.ShortcutAction;
 import com.haulmont.cuba.gui.components.TabSheet;
 import de.diedavids.cuba.wizard.gui.components.Wizard;
 import de.diedavids.cuba.wizard.web.gui.components.simple.WizardButtonsPanel.WizardButtonType;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -26,10 +27,7 @@ public class SimpleWebWizard extends AbstractSimpleWebWizard {
     protected Wizard wizard;
     protected TabSheet.Tab currentStep;
     protected TabSheet.Tab currentTab;
-//    private BaseAction cancelAction;
-//    private BaseAction nextAction;
-//    private BaseAction prevAction;
-//    private BaseAction finishAction;
+
     private WizardButtonsPanel buttonsPanel;
 
     @Override
@@ -128,23 +126,23 @@ public class SimpleWebWizard extends AbstractSimpleWebWizard {
     private ButtonsPanel createWizardButtonPanel() {
 
        return buttonsPanel.createWizardButtonPanel(
-            Arrays.asList(
-                WizardButtonsPanel.button(
+            asList(
+                WizardButtonsPanel.buttonDescriptor(
                     WizardButtonType.CANCEL,
                     this::handleCancelClick,
                     () -> true
                 ),
-                WizardButtonsPanel.button(
+                WizardButtonsPanel.buttonDescriptor(
                     WizardButtonType.PREVIOUS,
                     e -> previousStep(),
                     () -> !currentTabIsFirstTab()
                 ),
-                WizardButtonsPanel.button(
+                WizardButtonsPanel.buttonDescriptor(
                     WizardButtonType.NEXT,
                     e -> nextStep(),
                     () -> !currentTabIsLastTab()
                 ),
-                WizardButtonsPanel.button(
+                WizardButtonsPanel.buttonDescriptor(
                     WizardButtonType.FINISH,
                     this::handleFinishClick,
                     this::currentTabIsLastTab
