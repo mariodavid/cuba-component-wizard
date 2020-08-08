@@ -50,7 +50,6 @@ dependencies {
 }
 ```
 
-
 ## Using the application component
 
 Add a XML namespace `wizard` to the window tag of your screen like this:
@@ -82,6 +81,72 @@ Then add your wizard component to the screen:
 ```
 
 The Tabs of the wizard have the same attributes available as the ones from the `TabSheet` component of CUBA.
+
+The Wizard has particular subscription methods, that can be used in order to programmatically interact with
+the Wizrd component. Here is an example of those:
+
+```java
+
+@UiController("ddcw_WizardNew")
+@UiDescriptor("wizard-test-screen.xml")
+public class WizardTestScreen extends Screen {
+
+    @Inject
+    protected Wizard wizard;
+    @Inject
+    protected Notifications notifications;
+
+    @Subscribe("wizard")
+    protected void onCancelWizardClick(
+        WizardCancelClickEvent event
+    ) {
+        
+        notifications.create(NotificationType.TRAY)
+            .withCaption("Wizard cancelled")
+            .show();
+    }
+
+    @Subscribe("wizard")
+    protected void onWizardStepPreChangeEvent(
+        WizardTabPreChangeEvent event
+    ) {
+
+        notifications.create(NotificationType.TRAY)
+            .withCaption("Tab will be changed unless `event.preventTabChange();` is called in here")
+            .show();
+    }
+
+    @Subscribe("wizard")
+    protected void onWizardStepChangeEvent(
+        WizardTabChangeEvent event
+    ) {
+        notifications.create(NotificationType.TRAY)
+            .withCaption("Tab has changed")
+            .show();
+    }
+
+    @Subscribe("wizard")
+    protected void onFinishWizardClick(
+        WizardFinishClickEvent event
+    ) {
+
+        notifications.create(NotificationType.TRAY)
+            .withCaption("Wizard finished")
+            .show();
+    }
+
+}
+```
+
+### Upgrade Notice
+
+Please note, that version 0.8.x is not compatible with previous versions of the wizard addon. In order to 
+support the CUBA 7 based Screen APIs, various breaking changes were introduced.
+ 
+Mainly the underlying idea that step frames are particular types of Frames is no longer true. Steps were replaced with Tabs, which are just Component Containers just like in the TabSheet / Accordion component. That being said, it is still possible to support Fragments (the CUBA 7 equivalent of Frames) _within_ a Tab.
+
+For further information on how to use the new API, see the following example usage section.
+
 
 ### Example usage
 To see this application component in action, check out this example: [cuba-example-using-wizard](https://github.com/mariodavid/cuba-example-using-wizard).
