@@ -28,7 +28,7 @@ For more information on this topic see: http://ui-patterns.com/patterns/Wizard
 
 | Platform Version | Add-on Version |
 | ---------------- | -------------- |
-| 7.2.x            | 0.6.x          |
+| 7.2.x            | 0.6.x - 0.8.x  |
 | 7.1.x            | 0.5.x          |
 | 7.0.x            | 0.4.x          |
 | 6.10.x           | 0.3.x          |
@@ -55,17 +55,33 @@ dependencies {
 
 Add a XML namespace `wizard` to the window tag of your screen like this:
 
+```xml
     <window xmlns="http://schemas.haulmont.com/cuba/window.xsd"
-        xmlns:wizard="http://schemas.diedavids.de/wizard/0.1/ui-component.xsd">
-
+        xmlns:wizard="http://schemas.diedavids.de/wizard/0.2/wizard-component.xsd">
+```
 
 Then add your wizard component to the screen:
 
-        <wizard:wizard id="myWizard">
-            <wizard:step caption="Step 1" screen="example-1-step-1" />
-            <wizard:step caption="Step 2" screen="example-1-step-2" />
-        </wizard:wizard>
-        
+```xml
+<wizard:wizard id="wizard">
+    <wizard:tab
+      id="step1Tab"
+      caption="msg://step1"
+      icon="font-icon:ADN"
+      spacing="true"
+      margin="true">
+        <button id="checkBtn" icon="font-icon:CHECK" />
+    </wizard:tab>
+    <wizard:tab
+      id="step2Tab"
+      caption="msg://step2"
+      icon="font-icon:ADN">
+        <button id="check2Btn" icon="font-icon:CHECK" />
+    </wizard:tab>
+</wizard:wizard>
+```
+
+The Tabs of the wizard have the same attributes available as the ones from the `TabSheet` component of CUBA.
 
 ### Example usage
 To see this application component in action, check out this example: [cuba-example-using-wizard](https://github.com/mariodavid/cuba-example-using-wizard).

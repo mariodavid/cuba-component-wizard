@@ -2,6 +2,7 @@ package de.diedavids.cuba.wizard.gui.components;
 
 import com.haulmont.bali.events.Subscription;
 import com.haulmont.cuba.gui.components.TabSheet;
+import com.haulmont.cuba.gui.components.TabSheet.Tab;
 import java.util.EventObject;
 import java.util.function.Consumer;
 
@@ -23,17 +24,16 @@ public interface Wizard extends TabSheet {
 
 
     /**
-     * Add a listener that will be notified when a step change happened
+     * Add a listener that will be notified when a tab change happened
      */
     Subscription addWizardTabChangeListener(Consumer<WizardTabChangeEvent> listener);
     void removeWizardTabChangeListener(Consumer<WizardTabChangeEvent> listener);
 
     /**
-     * Add a listener that will be notified when a step is going to be changed
+     * Add a listener that will be notified when a tab is going to be changed
      */
     Subscription addWizardTabPreChangeListener(Consumer<WizardTabPreChangeEvent> listener);
     void removeWizardTabPreChangeListener(Consumer<WizardTabPreChangeEvent> listener);
-
 
     class WizardTabChangeEvent extends EventObject {
 
