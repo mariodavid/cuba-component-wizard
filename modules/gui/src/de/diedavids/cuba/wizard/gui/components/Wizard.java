@@ -1,36 +1,55 @@
 package de.diedavids.cuba.wizard.gui.components;
 
-import com.haulmont.cuba.gui.components.Component;
-import com.haulmont.cuba.gui.components.Frame;
-import com.haulmont.cuba.gui.components.OrderedContainer;
-
+import com.haulmont.bali.events.Subscription;
+import com.haulmont.cuba.gui.components.TabSheet;
+import com.haulmont.cuba.gui.components.TabSheet.Tab;
 import java.util.EventObject;
+import java.util.function.Consumer;
 
-public interface Wizard extends OrderedContainer,
-                Component.HasIcon, Component.HasCaption {
+/**
+ * Wizard component interface.
+ */
+public interface Wizard extends TabSheet {
+
     String NAME = "wizard";
 
-    WizardStep addStep(int index, String name, AbstractWizardStep wizardStep);
-    void addStep(int index, WizardStep wizardStep);
+    void nextTab();
 
-    WizardStep getStep(String stepId);
+    void previousTab();
 
-    void addWizardStepChangeListener(WizardStepChangeListener listener);
-    void removeWizardStepChangeListener(WizardStepChangeListener listener);
+    enum Direction {
+        NEXT,
+        PREVIOUS
+    }
 
-    void removeStep(String name);
 
-    void init();
+    /**
+     * Add a listener that will be notified when a tab change happened
+     */
+    Subscription addWizardTabChangeListener(Consumer<WizardTabChangeEvent> listener);
+    void removeWizardTabChangeListener(Consumer<WizardTabChangeEvent> listener);
 
-    class WizardStepChangeEvent extends EventObject {
+    /**
+     * Add a listener that will be notified when a tab is going to be changed
+     */
+    Subscription addWizardTabPreChangeListener(Consumer<WizardTabPreChangeEvent> listener);
+    void removeWizardTabPreChangeListener(Consumer<WizardTabPreChangeEvent> listener);
 
-        WizardStep prevStep;
-        WizardStep step;
+    class WizardTabChangeEvent extends EventObject {
 
-        public WizardStepChangeEvent(Wizard source, WizardStep prevStep, WizardStep step) {
+        TabSheet.Tab oldTab;
+        TabSheet.Tab newTab;
+        Direction direction;
+
+        public WizardTabChangeEvent(Wizard source, TabSheet.Tab oldTab, TabSheet.Tab newTab, Direction direction) {
             super(source);
-            this.prevStep = prevStep;
-            this.step = step;
+            this.oldTab = oldTab;
+            this.newTab = newTab;
+            this.direction = direction;
+        }
+
+        public Direction getDirection() {
+            return direction;
         }
 
         @Override
@@ -38,23 +57,69 @@ public interface Wizard extends OrderedContainer,
             return (Wizard) super.getSource();
         }
 
-        public WizardStep getPrevStep() {
-            return prevStep;
+        public TabSheet.Tab getOldTab() {
+            return oldTab;
         }
 
-        public WizardStep getStep() {
-            return step;
+        public TabSheet.Tab getNewTab() {
+            return newTab;
         }
     }
 
-    @FunctionalInterface
-    interface WizardStepChangeListener extends java.util.function.Consumer<Wizard.WizardStepChangeEvent> {
-        void accept(Wizard.WizardStepChangeEvent event);
+    class WizardTabPreChangeEvent extends EventObject {
+
+        TabSheet.Tab oldTab;
+        TabSheet.Tab newTab;
+
+        Direction direction;
+
+        private boolean tabChangePrevented = false;
+
+        public WizardTabPreChangeEvent(Wizard source, TabSheet.Tab oldTab, TabSheet.Tab newTab, Direction direction) {
+            super(source);
+            this.oldTab = oldTab;
+            this.newTab = newTab;
+            this.direction = direction;
+        }
+
+        public Direction getDirection() {
+            return direction;
+        }
+        @Override
+        public Wizard getSource() {
+            return (Wizard) super.getSource();
+        }
+
+        public TabSheet.Tab getOldTab() {
+            return oldTab;
+        }
+
+        public TabSheet.Tab getNewTab() {
+            return newTab;
+        }
+
+
+        /**
+         * Invoke this method if you want to abort the tab change.
+         */
+        public void preventTabChange() {
+            tabChangePrevented = true;
+        }
+
+        /**
+         * Returns true if {@link #preventTabChange()} method was called and tab change will be aborted.
+         */
+        public boolean isTabChangePrevented() {
+            return tabChangePrevented;
+        }
     }
 
 
-    void addWizardCancelClickListener(WizardCancelClickListener listener);
-    void removeWizardCancelClickListener(WizardCancelClickListener listener);
+    /**
+     * Add a listener that will be notified when a wizards cancel operation is performed
+     */
+    Subscription addWizardCancelClickListener(Consumer<WizardCancelClickEvent> listener);
+    void removeWizardCancelClickListener(Consumer<WizardCancelClickEvent> listener);
 
     class WizardCancelClickEvent extends EventObject {
         public WizardCancelClickEvent(Wizard source) {
@@ -67,16 +132,12 @@ public interface Wizard extends OrderedContainer,
         }
     }
 
-    @FunctionalInterface
-    interface WizardCancelClickListener extends java.util.function.Consumer<Wizard.WizardCancelClickEvent> {
-        void accept(Wizard.WizardCancelClickEvent event);
-    }
 
-
-
-
-    void addWizardFinishClickListener(WizardFinishClickListener listener);
-    void removeWizardFinishClickListener(WizardFinishClickListener listener);
+    /**
+     * Add a listener that will be notified when a wizards finish operation is performed
+     */
+    Subscription addWizardFinishClickListener(Consumer<WizardFinishClickEvent> listener);
+    void removeWizardFinishClickListener(Consumer<WizardFinishClickEvent> listener);
 
     class WizardFinishClickEvent extends EventObject {
         public WizardFinishClickEvent(Wizard source) {
@@ -87,10 +148,5 @@ public interface Wizard extends OrderedContainer,
         public Wizard getSource() {
             return (Wizard) super.getSource();
         }
-    }
-
-    @FunctionalInterface
-    interface WizardFinishClickListener extends java.util.function.Consumer<Wizard.WizardFinishClickEvent> {
-        void accept(Wizard.WizardFinishClickEvent event);
     }
 }

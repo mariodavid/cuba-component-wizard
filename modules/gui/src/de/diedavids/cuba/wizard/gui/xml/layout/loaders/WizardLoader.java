@@ -1,67 +1,47 @@
 package de.diedavids.cuba.wizard.gui.xml.layout.loaders;
 
-import com.haulmont.cuba.core.global.AppBeans;
-import com.haulmont.cuba.gui.UiComponents;
+import com.haulmont.cuba.gui.components.Component;
+import com.haulmont.cuba.gui.components.TabSheet;
 import com.haulmont.cuba.gui.xml.layout.ComponentLoader;
 import com.haulmont.cuba.gui.xml.layout.LayoutLoader;
-import com.haulmont.cuba.gui.xml.layout.loaders.ContainerLoader;
+import com.haulmont.cuba.gui.xml.layout.loaders.TabComponentLoader;
+import com.haulmont.cuba.gui.xml.layout.loaders.TabSheetLoader;
 import de.diedavids.cuba.wizard.gui.components.Wizard;
-import de.diedavids.cuba.wizard.gui.components.WizardStep;
+import java.util.List;
 import org.dom4j.Element;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+public class WizardLoader extends TabSheetLoader {
 
-public class WizardLoader extends ContainerLoader<Wizard> {
-
-    protected Map<Element, WizardStep> pendingLoadSteps = new LinkedHashMap<>();
-
-    protected UiComponents uiComponents = AppBeans.get(UiComponents.NAME);
 
     @Override
     public void createComponent() {
-        resultComponent = uiComponents.create(Wizard.class);
+        resultComponent = factory.create(Wizard.NAME);
         loadId(resultComponent, element);
 
-        List<Element> stepElements = element.elements("step");
+        LayoutLoader layoutLoader = getLayoutLoader();
 
-        int i = 0;
-        for (Element stepElement : stepElements) {
+        List<Element> tabElements = element.elements("tab");
+        for (Element tabElement : tabElements) {
+            final String name = tabElement.attributeValue("id");
 
-            LayoutLoader layoutLoader = getLayoutLoader();
+            boolean lazy = Boolean.parseBoolean(tabElement.attributeValue("lazy"));
+            ComponentLoader tabComponentLoader = layoutLoader
+                .getLoader(tabElement, TabComponentLoader.class);
+            TabSheet.Tab tab;
+            if (lazy) {
+                tab = resultComponent.addLazyTab(name, tabElement, tabComponentLoader);
+            } else {
+                tabComponentLoader.createComponent();
 
-            ComponentLoader stepComponentLoader = layoutLoader.getLoader(stepElement, WizardStepLoader.class);
-            stepComponentLoader.createComponent();
+                Component tabComponent = tabComponentLoader.getResultComponent();
 
-            WizardStep stepComponent = (WizardStep) stepComponentLoader.getResultComponent();
-            resultComponent.addStep(i, stepComponent);
-            pendingLoadComponents.add(stepComponentLoader);
-            pendingLoadSteps.put(stepElement, stepComponent);
+                tab = resultComponent.addTab(name, tabComponent);
 
-            i++;
-        }
-    }
-
-    @Override
-    public void loadComponent() {
-        loadWidth(resultComponent, element);
-        loadHeight(resultComponent, element);
-        loadCaption(resultComponent, element);
-
-
-        List<Element> wizardStepElements = element.elements("step");
-        for (Element tabElement : wizardStepElements) {
-            WizardStep step = pendingLoadSteps.remove(tabElement);
-            if (step != null) {
-                loadIcon(step, tabElement);
+                pendingLoadComponents.add(tabComponentLoader);
             }
+
+            pendingLoadTabs.put(tabElement, tab);
         }
-
-        loadSubComponents();
-
-        getComponentContext().addPostInitTask((context, window) -> resultComponent.init());
-
     }
-
 }
+

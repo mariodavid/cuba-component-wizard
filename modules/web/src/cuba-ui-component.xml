@@ -5,9 +5,4 @@
         <componentLoader>de.diedavids.cuba.wizard.gui.xml.layout.loaders.WizardLoader</componentLoader>
         <class>de.diedavids.cuba.wizard.web.gui.components.WebWizard</class>
     </component>
-    <component>
-        <name>step</name>
-        <componentLoader>de.diedavids.cuba.wizard.gui.xml.layout.loaders.WizardStepLoader</componentLoader>
-        <class>de.diedavids.cuba.wizard.web.gui.components.WebWizardStep</class>
-    </component>
 </components>

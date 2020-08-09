@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
+        caption="msg://wizard.caption"
+        xmlns:wizard="http://schemas.diedavids.de/wizard/0.2/wizard-component.xsd"
+        messagesPack="de.diedavids.cuba.wizard.web.screens.sample.lazy">
+    <layout>
+        <wizard:wizard id="wizard" width="100%" height="100%" caption="msg://wizard">
+            <wizard:tab
+              id="step1Tab"
+              caption="msg://step1"
+              icon="font-icon:ADN"
+              spacing="true"
+              margin="true"
+              lazy="true"
+            >
+                <button id="checkBtn" icon="font-icon:CHECK" />
+            </wizard:tab>
+            <wizard:tab
+              id="step2Tab"
+              caption="msg://step2"
+              icon="font-icon:ADN"
+              lazy="true"
+            >
+                <button id="check2Btn" icon="font-icon:CHECK" />
+            </wizard:tab>
+        </wizard:wizard>
+
+    </layout>
+</window>

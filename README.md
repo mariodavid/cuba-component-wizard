@@ -28,7 +28,7 @@ For more information on this topic see: http://ui-patterns.com/patterns/Wizard
 
 | Platform Version | Add-on Version |
 | ---------------- | -------------- |
-| 7.2.x            | 0.6.x          |
+| 7.2.x            | 0.6.x - 0.8.x  |
 | 7.1.x            | 0.5.x          |
 | 7.0.x            | 0.4.x          |
 | 6.10.x           | 0.3.x          |
@@ -50,22 +50,109 @@ dependencies {
 }
 ```
 
-
 ## Using the application component
 
-Add a XML namespace `wizard` to the window tag of your screen like this:
+Add the XML namespace `wizard` to the window tag of your screen like this:
 
+```xml
     <window xmlns="http://schemas.haulmont.com/cuba/window.xsd"
-        xmlns:wizard="http://schemas.diedavids.de/wizard/0.1/ui-component.xsd">
-
+        xmlns:wizard="http://schemas.diedavids.de/wizard/0.2/wizard-component.xsd">
+```
 
 Then add your wizard component to the screen:
 
-        <wizard:wizard id="myWizard">
-            <wizard:step caption="Step 1" screen="example-1-step-1" />
-            <wizard:step caption="Step 2" screen="example-1-step-2" />
-        </wizard:wizard>
+```xml
+<wizard:wizard id="wizard">
+    <wizard:tab
+      id="step1Tab"
+      caption="msg://step1"
+      icon="font-icon:ADN"
+      spacing="true"
+      margin="true">
+        <button id="checkBtn" icon="font-icon:CHECK" />
+    </wizard:tab>
+    <wizard:tab
+      id="step2Tab"
+      caption="msg://step2"
+      icon="font-icon:ADN">
+        <button id="check2Btn" icon="font-icon:CHECK" />
+    </wizard:tab>
+</wizard:wizard>
+```
+
+The Wizard as well as its Tabs have the same attributes available as the ones from the `TabSheet` component of CUBA, as the Wizard component is just a specialized version of the `TabSheet`  component.
+
+The Wizard has particular subscription methods, that can be used in order to programmatically interact with
+the Wizard component. Here is an example of those:
+
+```java
+@UiController("ddcw_SimpleWizard")
+@UiDescriptor("simple-wizard.xml")
+public class WizardTestScreen extends Screen {
+
+    @Inject
+    protected Wizard wizard;
+    @Inject
+    protected Notifications notifications;
+
+    @Subscribe("wizard")
+    protected void onCancelWizardClick(
+        WizardCancelClickEvent event
+    ) {
         
+        notifications.create(NotificationType.TRAY)
+            .withCaption("Wizard cancelled")
+            .show();
+    }
+
+    @Subscribe("wizard")
+    protected void onWizardStepPreChangeEvent(
+        WizardTabPreChangeEvent event
+    ) {
+
+        notifications.create(NotificationType.TRAY)
+            .withCaption("Tab will be changed unless `event.preventTabChange();` is called in here")
+            .show();
+    }
+
+    @Subscribe("wizard")
+    protected void onWizardStepChangeEvent(
+        WizardTabChangeEvent event
+    ) {
+        notifications.create(NotificationType.TRAY)
+            .withCaption("Tab has changed")
+            .show();
+    }
+
+    @Subscribe("wizard")
+    protected void onFinishWizardClick(
+        WizardFinishClickEvent event
+    ) {
+
+        notifications.create(NotificationType.TRAY)
+            .withCaption("Wizard finished")
+            .show();
+    }
+
+}
+```
+
+### Update from 0.6.x to 0.8.x
+
+Please note, that version 0.8.x is not compatible with previous versions of the wizard addon. In order to 
+support the CUBA 7 based Screen APIs, various breaking changes were introduced.
+ 
+Mainly the underlying idea that step frames are particular types of Frames is no longer true. Steps were replaced with Tabs, which are just Component Containers just like in the TabSheet / Accordion component. That being said, it is still possible to support Fragments (the CUBA 7 equivalent of Frames) _within_ a Tab.
+
+The following steps have to be performed in order to update from 0.6.x to 0.8.x:
+
+1. change `wizard` namespace in XML to new value: `xmlns:wizard="http://schemas.diedavids.de/wizard/0.2/wizard-component.xsd"`
+2. change `wizard:step` to `wizard:tab` 
+3. inline content of all step frames into the UI descriptor that defines the wizard.
+4. replace hook methods `onActivate`, `preClose` with the corresponding method subscriptions on the wizard itself.
+
+For further information on how to use the new API, see the following example usage section.
+
 
 ### Example usage
 To see this application component in action, check out this example: [cuba-example-using-wizard](https://github.com/mariodavid/cuba-example-using-wizard).

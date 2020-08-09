@@ -140,13 +140,20 @@ configure([globalModule, coreModule, guiModule, webModule]) {
     apply(plugin: 'cuba')
 
     dependencies {
+        testCompile('org.junit.jupiter:junit-jupiter-api:5.5.2')
+        testCompile('org.junit.jupiter:junit-jupiter-engine:5.5.2')
+        testCompile('org.junit.vintage:junit-vintage-engine:5.5.2')
 
-        testCompile('junit:junit:4.12')
-        testCompile 'org.assertj:assertj-core:2.9.0'
+        testCompile 'org.mockito:mockito-core:3.2.4'
+        testCompile 'org.mockito:mockito-junit-jupiter:3.2.4'
+
 
         testCompile('org.spockframework:spock-core:1.2-groovy-2.5')
         testCompile('org.springframework:spring-test:4.3.1.RELEASE')
-        testRuntime "cglib:cglib-nodep:3.2.4"
+
+
+        testCompile("org.assertj:assertj-core:3.11.1")
+
     }
 
     task sourceJar(type: Jar) {
@@ -156,6 +163,10 @@ configure([globalModule, coreModule, guiModule, webModule]) {
 
     artifacts {
         archives sourceJar
+    }
+
+    test {
+        useJUnitPlatform()
     }
 }
 
@@ -266,7 +277,7 @@ configure(webModule) {
         compileOnly(servletApi)
         compile(guiModule)
 
-        testCompile('de.diedavids.sneferu:sneferu:0.2.0')
+        testCompile('de.diedavids.sneferu:sneferu:0.3.1')
     }
     
     task webArchive(type: Zip) {
