@@ -8,11 +8,13 @@ import com.haulmont.cuba.gui.components.Component;
 import com.haulmont.cuba.gui.components.GroupBoxLayout;
 import com.haulmont.cuba.gui.components.ShortcutAction;
 import com.haulmont.cuba.gui.components.TabSheet;
+import com.haulmont.cuba.gui.xml.layout.ComponentLoader;
 import de.diedavids.cuba.wizard.gui.components.Wizard;
 import de.diedavids.cuba.wizard.web.gui.components.WizardButtonsPanel.WizardButtonType;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import org.dom4j.Element;
 
 public class WebWizard extends AbstractWebWizard {
 
@@ -76,6 +78,16 @@ public class WebWizard extends AbstractWebWizard {
     @Override
     public Tab addTab(String name, Component component) {
         final Tab tab = super.addTab(name, component);
+
+        tabList.add(tab);
+        disableAllOtherTabs(currentTab);
+
+        return tab;
+    }
+
+    @Override
+    public Tab addLazyTab(String name, Element descriptor, ComponentLoader loader) {
+        final Tab tab = super.addLazyTab(name, descriptor, loader);
 
         tabList.add(tab);
         disableAllOtherTabs(currentTab);

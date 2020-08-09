@@ -6,7 +6,7 @@ import com.haulmont.cuba.gui.components.Button;
 import com.haulmont.cuba.web.app.main.MainScreen;
 import de.diedavids.cuba.wizard.DdcwWebTestContainer;
 import de.diedavids.cuba.wizard.gui.components.Wizard;
-import de.diedavids.cuba.wizard.web.screens.sample.WizardTestScreen;
+import de.diedavids.cuba.wizard.web.screens.sample.simple.SimpleWizard;
 import de.diedavids.sneferu.environment.SneferuTestUiEnvironment;
 import de.diedavids.sneferu.screen.StandardScreenTestAPI;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,8 +29,8 @@ class WizardNavigationButtonsTest {
 
     @BeforeEach
     void setUp() {
-        final StandardScreenTestAPI<WizardTestScreen> wizardScreen = environment
-            .getUiTestAPI().openStandardScreen(WizardTestScreen.class);
+        final StandardScreenTestAPI<SimpleWizard> wizardScreen = environment
+            .getUiTestAPI().openStandardScreen(SimpleWizard.class);
 
         wizard = (Wizard) wizardScreen.screen().getWindow().getComponent("wizard");
     }

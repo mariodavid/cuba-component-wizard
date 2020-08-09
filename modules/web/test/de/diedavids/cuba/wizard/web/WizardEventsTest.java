@@ -11,7 +11,7 @@ import de.diedavids.cuba.wizard.gui.components.Wizard.WizardCancelClickEvent;
 import de.diedavids.cuba.wizard.gui.components.Wizard.WizardFinishClickEvent;
 import de.diedavids.cuba.wizard.gui.components.Wizard.WizardTabChangeEvent;
 import de.diedavids.cuba.wizard.gui.components.Wizard.WizardTabPreChangeEvent;
-import de.diedavids.cuba.wizard.web.screens.sample.WizardTestScreen;
+import de.diedavids.cuba.wizard.web.screens.sample.simple.SimpleWizard;
 import de.diedavids.sneferu.environment.SneferuTestUiEnvironment;
 import de.diedavids.sneferu.screen.StandardScreenTestAPI;
 import java.util.EventObject;
@@ -33,14 +33,14 @@ class WizardEventsTest {
             .withUserLogin("admin")
             .withMainScreen(MainScreen.class);
 
-    private StandardScreenTestAPI<WizardTestScreen> wizardTestScreen;
+    private StandardScreenTestAPI<SimpleWizard> simpleWizard;
 
     @BeforeEach
     void setUp() {
-        wizardTestScreen = environment
-            .getUiTestAPI().openStandardScreen(WizardTestScreen.class);
+        simpleWizard = environment
+            .getUiTestAPI().openStandardScreen(SimpleWizard.class);
 
-        wizard = (Wizard) wizardTestScreen.screen().getWindow().getComponent("wizard");
+        wizard = (Wizard) simpleWizard.screen().getWindow().getComponent("wizard");
     }
 
     @Test
@@ -161,7 +161,7 @@ class WizardEventsTest {
 
 
     private <T extends EventObject> T event(Class<T> clazz) {
-        return wizardTestScreen.screen().receivedEvent(clazz);
+        return simpleWizard.screen().receivedEvent(clazz);
     }
 
     private Button wizardBtn(String id) {

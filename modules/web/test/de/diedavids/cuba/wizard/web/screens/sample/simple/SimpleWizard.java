@@ -1,4 +1,4 @@
-package de.diedavids.cuba.wizard.web.screens.sample;
+package de.diedavids.cuba.wizard.web.screens.sample.simple;
 
 import com.haulmont.cuba.gui.components.TabSheet.SelectedTabChangeEvent;
 import com.haulmont.cuba.gui.screen.Screen;
@@ -14,9 +14,9 @@ import java.util.EventObject;
 import java.util.HashMap;
 import javax.inject.Inject;
 
-@UiController("ddcw_WizardNew")
-@UiDescriptor("wizard-test-screen.xml")
-public class WizardTestScreen extends Screen {
+@UiController("ddcw_SimpleWizard")
+@UiDescriptor("simple-wizard.xml")
+public class SimpleWizard extends Screen {
 
     @Inject
     protected Wizard wizard;

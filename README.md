@@ -86,7 +86,6 @@ The Wizard has particular subscription methods, that can be used in order to pro
 the Wizrd component. Here is an example of those:
 
 ```java
-
 @UiController("ddcw_WizardNew")
 @UiDescriptor("wizard-test-screen.xml")
 public class WizardTestScreen extends Screen {
@@ -144,6 +143,13 @@ Please note, that version 0.8.x is not compatible with previous versions of the 
 support the CUBA 7 based Screen APIs, various breaking changes were introduced.
  
 Mainly the underlying idea that step frames are particular types of Frames is no longer true. Steps were replaced with Tabs, which are just Component Containers just like in the TabSheet / Accordion component. That being said, it is still possible to support Fragments (the CUBA 7 equivalent of Frames) _within_ a Tab.
+
+The following steps have to be performed in order to update from 0.6.x to 0.8.x:
+
+1. change `wizard` namespace in XML to new value: `xmlns:wizard="http://schemas.diedavids.de/wizard/0.2/wizard-component.xsd"`
+2. change `wizard:step` to `wizard:tab` 
+3. inline content of all step frames into the UI descriptor that defines the wizard.
+4. replace hook methods `onActivate`, `preClose` with the corresponding method subscriptions on the wizard itself.
 
 For further information on how to use the new API, see the following example usage section.
 

@@ -6,14 +6,14 @@ import com.haulmont.cuba.gui.components.ComponentContainer;
 import com.haulmont.cuba.web.app.main.MainScreen;
 import de.diedavids.cuba.wizard.DdcwWebTestContainer;
 import de.diedavids.cuba.wizard.gui.components.Wizard;
-import de.diedavids.cuba.wizard.web.screens.sample.simple.SimpleWizard;
+import de.diedavids.cuba.wizard.web.screens.sample.lazy.LazyWizard;
 import de.diedavids.sneferu.environment.SneferuTestUiEnvironment;
 import de.diedavids.sneferu.screen.StandardScreenTestAPI;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
-class WizardRenderingTest {
+class WizardLazyRenderingTest {
 
     @RegisterExtension
     SneferuTestUiEnvironment environment =
@@ -29,49 +29,29 @@ class WizardRenderingTest {
 
     @BeforeEach
     void setUp() {
-        StandardScreenTestAPI<SimpleWizard> wizardScreen = environment
-            .getUiTestAPI().openStandardScreen(SimpleWizard.class);
+        StandardScreenTestAPI<LazyWizard> wizardScreen = environment
+            .getUiTestAPI().openStandardScreen(LazyWizard.class);
 
         wizard = (Wizard) wizardScreen.screen().getWindow().getComponent("wizard");
 
     }
 
     @Test
-    void when_screenIsLoaded_then_wizardComponentIsAvailable() {
+    void when_screenIsLoaded_then_theFirstLazyTabComponentsAreAvailable() {
 
         // given:
         assertThat(wizard)
             .isNotNull();
 
+        // and:
+        wizard.nextTab();
+
         // when:
-        final ComponentContainer step1Tab = (ComponentContainer) wizard.getTabComponent("step1Tab");
+        final ComponentContainer step2Tab = (ComponentContainer) wizard.getTabComponent("step2Tab");
 
         // then:
-        assertThat(step1Tab.getComponent("checkBtn"))
+        assertThat(step2Tab.getComponent("check2Btn"))
             .isNotNull();
     }
-
-
-    @Test
-    void when_screenIsLoaded_then_firstTabIsActive() {
-
-        // expect:
-        assertThat(wizard.getSelectedTab())
-            .isEqualTo(wizard.getTab("step1Tab"));
-    }
-
-    @Test
-    void when_screenIsLoaded_then_onlyTheFirstTabIsEnabled() {
-
-        // expect:
-        assertThat(wizard.getTab("step1Tab").isEnabled())
-            .isTrue();
-
-        // and:
-        assertThat(wizard.getTab("step2Tab").isEnabled())
-            .isFalse();
-    }
-
-
 
 }

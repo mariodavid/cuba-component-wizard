@@ -25,13 +25,10 @@ import org.dom4j.Element;
 public abstract class AbstractWebWizard extends WebCssLayout
     implements Wizard, UiPermissionAware, SupportsChildrenSelection {
 
-
     protected final UiComponents uiComponents;
     protected final Messages messages;
     protected GroupBoxLayout layoutWrapper;
-
     protected TabSheet tabSheetLayout;
-
 
     public AbstractWebWizard() {
         uiComponents = AppBeans.get(UiComponents.NAME);
@@ -51,8 +48,11 @@ public abstract class AbstractWebWizard extends WebCssLayout
     }
 
     @Override
-    public Tab addLazyTab(String name, Element descriptor,
-        ComponentLoader loader) {
+    public Tab addLazyTab(
+        String name,
+        Element descriptor,
+        ComponentLoader loader
+    ) {
         return tabSheetLayout.addLazyTab(name, descriptor, loader);
     }
 
