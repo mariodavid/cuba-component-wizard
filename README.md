@@ -52,7 +52,7 @@ dependencies {
 
 ## Using the application component
 
-Add a XML namespace `wizard` to the window tag of your screen like this:
+Add the XML namespace `wizard` to the window tag of your screen like this:
 
 ```xml
     <window xmlns="http://schemas.haulmont.com/cuba/window.xsd"
@@ -80,14 +80,14 @@ Then add your wizard component to the screen:
 </wizard:wizard>
 ```
 
-The Tabs of the wizard have the same attributes available as the ones from the `TabSheet` component of CUBA.
+The Wizard as well as its Tabs have the same attributes available as the ones from the `TabSheet` component of CUBA, as the Wizard component is just a specialized version of the `TabSheet`  component.
 
 The Wizard has particular subscription methods, that can be used in order to programmatically interact with
-the Wizrd component. Here is an example of those:
+the Wizard component. Here is an example of those:
 
 ```java
-@UiController("ddcw_WizardNew")
-@UiDescriptor("wizard-test-screen.xml")
+@UiController("ddcw_SimpleWizard")
+@UiDescriptor("simple-wizard.xml")
 public class WizardTestScreen extends Screen {
 
     @Inject
@@ -137,7 +137,7 @@ public class WizardTestScreen extends Screen {
 }
 ```
 
-### Upgrade Notice
+### Update from 0.6.x to 0.8.x
 
 Please note, that version 0.8.x is not compatible with previous versions of the wizard addon. In order to 
 support the CUBA 7 based Screen APIs, various breaking changes were introduced.
