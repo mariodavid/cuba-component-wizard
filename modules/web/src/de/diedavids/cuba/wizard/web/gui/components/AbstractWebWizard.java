@@ -71,15 +71,6 @@ public abstract class AbstractWebWizard extends WebCssLayout
         return tabSheetLayout.getSelectedTab();
     }
 
-    @Override
-    public void setSelectedTab(Tab tab) {
-        tabSheetLayout.setSelectedTab(tab);
-    }
-
-    @Override
-    public void setSelectedTab(String name) {
-        tabSheetLayout.setSelectedTab(name);
-    }
 
     @Override
     public Tab getTab(String name) {
@@ -118,14 +109,16 @@ public abstract class AbstractWebWizard extends WebCssLayout
 
     @Override
     public Subscription addSelectedTabChangeListener(
-        Consumer<SelectedTabChangeEvent> listener) {
+        Consumer<SelectedTabChangeEvent> listener
+    ) {
         return tabSheetLayout.addSelectedTabChangeListener(listener);
     }
 
     @Override
     @Deprecated
     public void removeSelectedTabChangeListener(
-        Consumer<SelectedTabChangeEvent> listener) {
+        Consumer<SelectedTabChangeEvent> listener
+    ) {
         tabSheetLayout.removeSelectedTabChangeListener(listener);
     }
 

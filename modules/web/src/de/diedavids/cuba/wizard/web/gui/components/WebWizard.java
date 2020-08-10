@@ -190,6 +190,7 @@ public class WebWizard extends AbstractWebWizard {
         }
     }
 
+
     private void handleFinishClick(ActionPerformedEvent actionPerformedEvent) {
         WizardFinishClickEvent finishClickEvent = new WizardFinishClickEvent(this);
         publish(WizardFinishClickEvent.class, finishClickEvent);
@@ -250,5 +251,28 @@ public class WebWizard extends AbstractWebWizard {
     @Override
     public void previousTab() {
         switchToTab(findPrevTab(), Direction.PREVIOUS);
+    }
+
+    @Override
+    public void setSelectedTab(Tab tab) {
+        switchToTab(tab, determineDirection(tab));
+    }
+
+    private Direction determineDirection(Tab tab) {
+        final int currentIndex = getTabIndex(currentTab);
+        final int newIndex = getTabIndex(tab);
+
+        if (currentIndex < newIndex) {
+            return Direction.NEXT;
+        }
+        else {
+            return Direction.PREVIOUS;
+        }
+    }
+
+    @Override
+    public void setSelectedTab(String name) {
+        final Tab tab = getTab(name);
+        switchToTab(tab, determineDirection(tab));
     }
 }
